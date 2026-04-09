@@ -1,1 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+    <meta charset="UTF-8">
+    <meta name="viewport"  content="width=device-width, intial-scale=1">
+    <title> Hawaleek | Transport Guide </title>
+    <link rel="stylesheet" href="">
+</head>
+<body> 
+    <header> 
+        <nav class="navbar">
+            <div class="logo"> Hawaleek </div>
+            <ul> 
+                <li> <a href="../index.html"> Home </a></li>
+                <li> <a href="transport.html"  class="active"> Transport </a></li>
+                <li> <a href="booking.html"> Booking </a></li>
+            </ul>
+        </nav>
+    </header>
 
+    <main> 
+        <section class="transport-hero">
+            <h1> Neighborhood Transport Guide </h1>
+            <p> Find Microbus routes, Metro status, and calculate your fare.</p>
+        </section>
+
+        <section class="route-finder">
+            <h2> Route Finder </h2>
+                <div class="finder-box">
+                    <input type="text" placeholder="From (Current Location)">
+                    <input type="text" placeholder="To (Destination)">
+                    <button type="button"> Find The Best Route </button>
+                </div>
+        </section>
+
+        <section class="fare-calculator">
+            <h3> Fare Calculator </h3>
+            <div class="calc-grid">
+                <label for="transportType"> Vehicle Type: </label>
+                <select id="transportType">
+                <option value="microbus"> Microbus</option>
+                <option value="bus"> Public Bus </option>
+                <option value="metro" > Metro </option>
+                </select>
+
+                <label for="station"> Number Of Stations/KMs: </label>
+                <input type="number" id="fareResult" min="1">
+                <p> Estimated Fare: <span id="fareResult" >0.00 </span> EGP </p>
+            </div>
+        </section>
+
+        <section class="live-status"> 
+            <h3> Community Live Status </h3>
+            <div class="status-card">
+                <p><strong> Metro Line 1:</strong> <span class="status-good" > Clear </span></p>
+                <p><strong> Main Square Station:</strong> <span class="status-crowded"> Crowded</span></p>
+            </div>
+        </section>
+    </main>
+
+    <footer> 
+ <p>&copy; 2026 Hawaleek Project</p>
+    </footer>
+</body>
+</html>
