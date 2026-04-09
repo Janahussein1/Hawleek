@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewpoint" content="width=device-width,initial-scale=1.0">
+<title>Hawlek|Admin Dashboard</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="dashboard-container">
+<aside class="sidebar">
+    <h2>Hawlek Admin</h2>
+    <nav>
+    <ul>
+        <li><a href="#" class="active">Dashboard</a></li>
+        <li><a href="pages/clinics.html">Clinics></a></li>
+        <li><a href="pages/transport.html">Transport></a></li>
+        <li><a href="../index.html">Logout</a></li>
+</ul>
+</nav>
+</aside>
+<main class="main-content">
+    <header>
+        <h1>Resturant Management</h1>
+        <p>Welcome back,Owner!</p>
+    </header>
+    <section class="stats-container">
+        <div class="card">
+            <h3>Total Bookings</h3>
+            <p class="stat-number">128</p>
+        </div>
+        <div class="card">
+            <h3>Pending</h3>
+            <p class="stat-number" style="color:#f39c12;">12</p>
+        </div>
+        <div class="card">
+            <h3>Cancelled</h3>
+            <p class="stat-number" style="color:#e74c3c;">4</p>
+        </div>
+    </section>
+    <section class="table-wrapper">
+        <h2>Recent Reservations</h2>
+        <div class="table-wrapper">
+            <table>
+            <thread>
+            <tr>
+            <th>Customer name</th>
+            <th>Guests</th>
+            <th>Date & time</th>
+            <th>Status</th>
+            <th>Actions</th>
+         </tr>
+        </thead>
+        </tbody>
+        <tr>
+        <td>Omar Khaled</td>
+        <td>4 Persons</td>
+        <td>Oct 28, 8:00 PM</td>
+        <td><span class="badge pending">Pending</span></td>
+        <td><button class="btn-confirm">Confirm</button>
+            <button class="btn-cancel">Cancel</button></td></tr>
+        <tr><td>Sara Ahmed</td>   
+            <td>2 Persons</td> 
+            <td>Oct 29, 2:00 PM</td>
+            <td><span class="badge comfirmed">Confirmed</span></td>
+            <td><button class="btn-confirm" disabled>Confirm</button>
+                <button class="btn-cancel">Cancel</button>
+        </td> 
+        </tr>
+        </thread>
+    </tbody>
+    </table>
+</div>
+    </section>
+</main>
+</div>
+</body>
+</html>
+</DOCTYPE>
