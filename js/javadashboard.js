@@ -1,18 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
     
     // --- 1. LOCAL STORAGE (State Management) ---
-    // This checks if we have saved stats in the browser. If not, it uses your default HTML numbers.
+    // Retrieve saved stats or use defaults if it's the first time
     let pendingCount = localStorage.getItem('pendingStats') ? parseInt(localStorage.getItem('pendingStats')) : 12;
     let cancelledCount = localStorage.getItem('cancelledStats') ? parseInt(localStorage.getItem('cancelledStats')) : 4;
 
     const statPendingEl = document.getElementById('stat-pending');
     const statCancelledEl = document.getElementById('stat-cancelled');
 
-    // Update the UI with the saved (or default) numbers
+    // Set initial UI
     statPendingEl.innerText = pendingCount;
     statCancelledEl.innerText = cancelledCount;
 
-    // Helper function to update numbers and save them to LocalStorage
+    // Function to update the DOM and save to LocalStorage simultaneously
     const updateStats = () => {
         statPendingEl.innerText = pendingCount;
         statCancelledEl.innerText = cancelledCount;
@@ -20,7 +20,17 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('cancelledStats', cancelledCount);
     };
 
-    // --- 2. EVENT DELEGATION (Table Actions) ---
+    // --- 2. THE DIALOG MODAL SYSTEM ---
+    const modal = document.getElementById('notificationModal');
+    const modalText = modal.querySelector('p');
+
+    // Helper function to show a custom message in our native modal
+    const showNotification = (message) => {
+        modalText.innerText = message;
+        modal.showModal(); // This is the built-in HTML5 function to open a <dialog>
+    };
+
+    // --- 3. EVENT DELEGATION & DATA ATTRIBUTES ---
     const tableBody = document.getElementById('reservation-table-body');
 
     if (tableBody) {
@@ -29,63 +39,78 @@ document.addEventListener('DOMContentLoaded', () => {
             const row = target.closest('tr');
             if (!row) return;
 
+            // ADVANCED: Reading custom data attributes using the JavaScript 'dataset' API
+            const reservationId = row.dataset.id; 
+            const currentStatus = row.dataset.status; 
+            const customerName = row.querySelector('.customer-name').innerText;
+
             const badge = row.querySelector('.badge');
             const confirmBtn = row.querySelector('.btn-confirm');
             const cancelBtn = row.querySelector('.btn-cancel');
 
-            // Handle Confirm
+            // --- HANDLE CONFIRM ---
             if (target.classList.contains('btn-confirm') && !target.disabled) {
-                if (badge.classList.contains('pending')) {
+                if (currentStatus === 'pending') {
                     pendingCount--; // Decrease pending
-                }
-                badge.className = 'badge confirmed';
-                badge.textContent = 'Confirmed';
-                target.disabled = true; // Disable confirm button
-                updateStats(); // Save changes
-            }
-
-            // Handle Cancel
-            if (target.classList.contains('btn-cancel') && !target.disabled) {
-                if (badge.classList.contains('pending')) {
-                    pendingCount--; // Decrease pending
-                } else if (badge.classList.contains('confirmed')) {
-                    // Optional logic: if they cancel an already confirmed booking
-                    confirmBtn.disabled = true;
                 }
                 
-                cancelledCount++; // Increase cancelled
+                // Update UI visually
+                badge.className = 'badge confirmed';
+                badge.textContent = 'Confirmed';
+                target.disabled = true; 
+                
+                // ADVANCED: Update the hidden data attribute
+                row.dataset.status = 'confirmed';
+
+                updateStats(); 
+                
+                // ADVANCED: ES6 Template Literals (` `) to insert variables into a string
+                showNotification(`Reservation #${reservationId} for ${customerName} has been Confirmed.`);
+            }
+
+            // --- HANDLE CANCEL ---
+            if (target.classList.contains('btn-cancel') && !target.disabled) {
+                if (currentStatus === 'pending') {
+                    pendingCount--; 
+                }
+                
+                cancelledCount++; 
+                
                 badge.className = 'badge cancelled';
                 badge.textContent = 'Cancelled';
                 
                 confirmBtn.disabled = true;
                 cancelBtn.disabled = true;
-                row.style.opacity = '0.5'; // Visually dim the row
-                updateStats(); // Save changes
+                row.style.opacity = '0.5'; 
+                
+                // ADVANCED: Update the hidden data attribute
+                row.dataset.status = 'cancelled';
+
+                updateStats(); 
+                
+                showNotification(`Reservation #${reservationId} for ${customerName} has been Cancelled.`);
             }
         });
     }
 
-    // --- 3. REGULAR EXPRESSIONS (Live Search Filter) ---
+    // --- 4. REGULAR EXPRESSIONS (Live Search Filter) ---
     const searchInput = document.getElementById('searchInput');
     const rows = document.querySelectorAll('.reservation-row');
 
     searchInput.addEventListener('input', (e) => {
         const searchTerm = e.target.value.trim();
 
-        // Create a Dynamic Regular Expression
-        // 'i' makes it case-insensitive (e.g., "omar" matches "Omar")
-        // We use regex to see if the customer name contains the typed letters
+        // Create a Dynamic Regular Expression ('i' = case insensitive)
         const regexPattern = new RegExp(searchTerm, 'i');
 
         rows.forEach(row => {
             const customerName = row.querySelector('.customer-name').textContent;
             
-            // The .test() method is a powerful Regex feature. 
-            // It returns true if the regex pattern is found in the customerName string.
+            // Regex .test() checks if the pattern exists in the string
             if (regexPattern.test(customerName)) {
-                row.classList.remove('hidden-row'); // Show row
+                row.classList.remove('hidden-row');
             } else {
-                row.classList.add('hidden-row'); // Hide row
+                row.classList.add('hidden-row');
             }
         });
     });
