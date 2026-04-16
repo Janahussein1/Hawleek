@@ -13,7 +13,7 @@
            <ul>
             <li> <a href="#home"> Home </a></li>
             <li> <a href="#directory"> Local Directory </a></li>
-            <li> <a href="#quickbook"> Quick Book </a> </li>
+            <li> <a href="pages/booking.html"> Booking </a> </li>
             <li> <a href= "pages/transport.html"> Transport  </a></li>
             <li> <a href="pages/admin.html" > Admin </a></li>
            </ul>
@@ -32,7 +32,7 @@
                 <h2> Find What You Need </h2>
                 <form id="searchform" >
                     <label for="searchQuery" class="hidden-label"> Search </label>
-                    <input type="text" id="searchQuery" name="searchQuery" placeholder="Search foe a restaurant, service, or station...">
+                    <input type="text" id="searchQuery" name="searchQuery" placeholder="Search for a restaurant, service, or station...">
                    
                     <label for="category"    class="hidden-label"> Category </label>
                     <select name="Category"  id="category" >
@@ -49,28 +49,26 @@
                 <h2> Featured Local Businesses </h2>
                 <div class="services-wrapper">
                 <article class="card">
-                    <img src="pages/6af1e3b1-3450-4b60-aef4-db0dda5ff461.jpeg"  alt="Cozy Local Pizzeria interior">
+                    <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800"  alt="Cozy Local Pizzeria">
                     <div class="cards-content">
                         <h3>Neighborhood Pizzeria</h3>
                         <p> Authentic wood-fired pizza right around the corner.</p>
-                        <a href="pages/299a411e-5e81-44e5-bb78-ce8fbe356973.jpeg" class="book-link"> Book a Table</a>
+                        <a href="pages/booking.html" class="book-link"> Book a Table</a>
                         </div>
                         </article>
 
 
             <article class="card">
-                <img src="pages/a009a33e-802a-4339-b0f1-b046e0aece64.jpeg"  alt="Electrician fixing a panel">
+                <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800"  alt="Electrician fixing a panel">
                 <div class="card-content">
                     <h3> Sayed Electric & Plumbing </h3>
                     <p> Reliable home maintenance and emergency repairs.</p>
-                    <a href="#quick-book"  class="book-link"> Request service </a>
+                    <a href="pages/booking.html"  class="book-link"> Request service </a>
                 </div>
             </article>  
-         </div>  
-        </section>
 
         <article class="card">
-            <img src="pages/8af47eac-7ab6-457f-9c2e-adf0065a8f08.jpeg" alt="Microbus station" >
+            <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800" alt="Microbus station" >
             <div class="card-content">
                 <h3> Local Transport Hub </h3>
                 <p> Track microbuses and find the nearest stations in real-time. </p>
@@ -78,39 +76,7 @@
             </div>
         </article>
 
-        <section id="quick-book"  class="booking-section">
-            <h2> Quick Appointment Booking </h2>
-            <p> Reserve a table or schedule a local service directly.</p>
-
-            <form id="appointmentForm"  class="booking-form">
-                <div class="form-group">
-                    <label for="serivcetype"> Select Servie/Venue: </label>
-                    <select id="serviceType" name="servicetype" required>
-                        <option value="" disabled selected> Choose from the list..</option>
-                        <option value="pizzeria"> Neighborhood Pizzeria </option>
-                        <option value="electrician"> Sayed Electric & Plumbing </option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                <label for="userName" > Full Name: </label>
-                <input type="text" id="username" name="userName" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="userPhone"> Phone Number: </label>
-                    <input type="tel"  id="userPhone"  name="userPhone" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="bookingDate"> Preferred Date: </label>
-                    <input type="date" id="bookingDate" name="bookingDate" min="2024-05-20" required>
-                </div>
-
-                <button type="submit"  class="submit-btn"> Confirm Booking </button>
-            </form>
-        </section>
-</main>
+        </div></section></main>
 
 <footer>
     <div class="footer-content">
