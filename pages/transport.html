@@ -19,47 +19,71 @@
     </header>
 
     <main> 
-        <section class="transport-hero">
+        <section class="transport-header">
             <h1> Neighborhood Transport Guide </h1>
-            <p> Find Microbus routes, Metro status, and calculate your fare.</p>
+            <p> Find Microbus routes, Metro status, and calculate your fare in real time.</p>
         </section>
 
-        <section class="route-finder">
-            <h2> Route Finder </h2>
-                <div class="finder-box">
-                    <input type="text" placeholder="From (Current Location)">
-                    <input type="text" placeholder="To (Destination)">
-                    <button type="button"> Find The Best Route </button>
-                </div>
-        </section>
+        <section class="transport tools wrapper">
+                <div class="tool-card">
+                    <h2> 📍 Route Finder </h2>
+                    <div class="input-group"> 
 
-        <section class="fare-calculator">
-            <h3> Fare Calculator </h3>
-            <div class="calc-grid">
-                <label for="transportType"> Vehicle Type: </label>
-                <select id="transportType">
-                <option value="microbus"> Microbus</option>
-                <option value="bus"> Public Bus </option>
-                <option value="metro" > Metro </option>
-                </select>
+        <input type="text" placeholder="To (Destination)">
+</div>
+<button class="action-btn">Find The Best Route</button>
+</div>
 
-                <label for="station"> Number Of Stations/KMs: </label>
-                <input type="number" id="fareResult" min="1">
-                <p> Estimated Fare: <span id="fareResult" >0.00 </span> EGP </p>
-            </div>
-        </section>
+<div class="tool-card">
+<h2>💰 Fare Calculator</h2>
+<div class="input-group">
+<label style="font-size: 0.8rem; margin-left: 10px;">Vehicle Type:</label>
+<select>
+<option>Microbus</option>
+<option>Metro</option>
+<option>Bus</option>
+</select>
+</div>
+<div class="input-group">
+<input type="number" placeholder="Number of Stations/KMs">
+</div>
+<div class="fare-result">
+Estimated Fare: <strong>0.00 EGP</strong>
+</div>
+</div>
 
-        <section class="live-status"> 
-            <h3> Community Live Status </h3>
-            <div class="status-card">
-                <p><strong> Metro Line 1:</strong> <span class="status-good" > Clear </span></p>
-                <p><strong> Main Square Station:</strong> <span class="status-crowded"> Crowded</span></p>
-            </div>
-        </section>
-    </main>
+<div class="tool-card">
+<h2>📢 Community Live Status</h2>
+<div class="live-status-item">
+<span>Metro Line 1</span>
+<span class="status-clear">● Clear</span>
+</div>
+<div class="live-status-item">
+<span>Main Square Station</span>
+<span class="status-text">● Crowded</span>
+</div>
+</div>
 
-    <footer> 
- <p>&copy; 2026 Hawaleek Project</p>
-    </footer>
+</section>
+
+<div class="routes-grid">
+<div class="route-card">
+<span class="live-indicator"></span>
+<strong style="color: RoyalBlue;">Route: Haram - Giza</strong>
+<p>Next Microbus in: <strong>5 mins</strong></p>
+<p style="font-size: 0.8rem; color: gray;">Station: El-Remaya</p>
+</div>
+
+<div class="route-card" style="border-left-color: OrangeRed;">
+<strong style="color: OrangeRed;">Route: Dokki - Ramses</strong>
+<p>Next Microbus in: <strong>12 mins</strong></p>
+<p style="font-size: 0.8rem; color: gray;">Station: Galaa Square</p>
+</div>
+</div>
+</main>
+
+<footer>
+<p>&copy; 2026 Hawaleek Project</p>
+</footer>
 </body>
 </html>
