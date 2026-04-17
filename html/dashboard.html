@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Hawlek Admin Dashboard for Restaurant Management">
-    <meta name="theme-color" content="#2c3e50">
     <title>Hawlek | Secure Admin Portal</title>
     
     <link rel="stylesheet" href="css/style.css">
@@ -26,13 +25,13 @@
             <input type="password" id="password" placeholder="Enter your secure password" required autocomplete="current-password">
         </div>
         
-        <p id="error-msg" class="error-message" hidden></p>
+        <p id="error-msg" class="error-message" style="display: none; color: red; font-weight: bold;"></p>
         
         <button type="submit" class="btn-login">Secure Login</button>
     </form>
 </div>
 
-<div id="dashboard-section" class="dashboard-container" hidden>
+<div id="dashboard-section" class="dashboard-container" style="display: none;">
     
     <aside class="sidebar" aria-label="Main Navigation">
         <h2>Hawlek Admin</h2>
