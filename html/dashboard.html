@@ -3,41 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Hawlek Admin Dashboard for Restaurant Management">
-    <title>Hawlek | Secure Admin Portal</title>
-    
+    <title>Hawlek | Admin Dashboard</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<div id="login-section" class="login-container">
-    <header>
-        <h2>Hawlek Secure Portal</h2>
-        <p>Please enter your administrative credentials to continue.</p>
-    </header>
-    <form id="loginForm">
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" id="username" placeholder="e.g., admin1" required autocomplete="username">
-        </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" placeholder="Enter your secure password" required autocomplete="current-password">
-        </div>
-        
-        <p id="error-msg" class="error-message" style="display: none; color: red; font-weight: bold;"></p>
-        
-        <button type="submit" class="btn-login">Secure Login</button>
-    </form>
-</div>
-
-<div id="dashboard-section" class="dashboard-container" style="display: none;">
-    
+<div class="dashboard-container">
     <aside class="sidebar" aria-label="Main Navigation">
         <h2>Hawlek Admin</h2>
         <nav>
             <ul> 
-                <li><a href="#" class="active" aria-current="page">Dashboard</a></li>
+                <li><a href="#" class="active">Dashboard</a></li>
                 <li><a href="pages/clinics.html">Clinics</a></li>
                 <li><a href="pages/transport.html">Transport</a></li>
                 <li><a href="index.html">Logout</a></li>
@@ -51,7 +27,7 @@
             <p>Welcome back, Administrator.</p>
         </header>
 
-        <section class="stats-container" aria-live="polite">
+        <section class="stats-container">
             <article class="card">
                 <h3>Total Bookings</h3>
                 <p class="stat-number" id="stat-total">2</p>
@@ -87,22 +63,22 @@
 
         <section class="table-wrapper">
             <h2>Recent Reservations</h2>
-            <input type="search" id="searchInput" class="search-bar" placeholder="Search by name..." aria-controls="reservation-table-body">
+            <input type="search" id="searchInput" class="search-bar" placeholder="Search by name...">
 
             <div class="table-responsive">
-                <table aria-label="Recent Reservations Table">
+                <table>
                     <thead>
                         <tr>
-                            <th scope="col">Customer name</th>
-                            <th scope="col">Guests</th>
-                            <th scope="col">Date & time</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Actions</th>
+                            <th>Customer name</th>
+                            <th>Guests</th>
+                            <th>Date & time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="reservation-table-body">
-                        <tr class="reservation-row" data-id="101" data-status="pending">
-                            <td class="customer-name" scope="row">Omar Khaled</td>
+                        <tr class="reservation-row" data-status="pending">
+                            <td class="customer-name">Omar Khaled</td>
                             <td>4 Persons</td>
                             <td><time datetime="2026-10-28T20:00">Oct 28, 8:00 PM</time></td>
                             <td><span class="badge pending">Pending</span></td>
@@ -111,8 +87,8 @@
                                 <button class="btn-cancel">Cancel</button>
                             </td>
                         </tr>
-                        <tr class="reservation-row" data-id="102" data-status="confirmed">
-                            <td class="customer-name" scope="row">Sara Ahmed</td>   
+                        <tr class="reservation-row" data-status="confirmed">
+                            <td class="customer-name">Sara Ahmed</td>   
                             <td>2 Persons</td> 
                             <td><time datetime="2026-10-29T14:00">Oct 29, 2:00 PM</time></td>
                             <td><span class="badge confirmed">Confirmed</span></td>
@@ -131,9 +107,7 @@
 <dialog id="notificationModal">
     <h3 id="modalTitle">System Update</h3>
     <p id="modalMessage">Action successful.</p>
-    <form method="dialog">
-        <button class="btn-close">Close</button>
-    </form>
+    <form method="dialog"><button>Close</button></form>
 </dialog>
 
 <script src="js/javadashboard.js"></script>
