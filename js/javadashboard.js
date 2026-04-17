@@ -1,83 +1,84 @@
-const form = document.getElementById("addReservationForm");
-const tableBody = document.getElementById("reservation-table-body");
+document.addEventListener('DOMContentLoaded', () => {
+    
+    const tableBody = document.getElementById('reservation-table-body');
+    const statTotal = document.getElementById('stat-total');
+    const statPending = document.getElementById('stat-pending');
+    const statCancelled = document.getElementById('stat-cancelled');
 
-let reservations = JSON.parse(localStorage.getItem("reservations")) || [];
+    // FUNCTION TO COUNT RESERVATIONS
+    function updateStats() {
+        const rows = document.querySelectorAll('.res-row');
+        let total = rows.length;
+        let pending = 0;
+        let cancelled = 0;
 
-// Load data when page opens
-window.onload = function () {
-    renderReservations();
-};
+        rows.forEach(row => {
+            const status = row.getAttribute('data-status');
+            if (status === 'Pending') pending++;
+            if (status === 'Cancelled') cancelled++;
+        });
 
-// Add reservation
-form.addEventListener("submit", function (e) {
-    e.preventDefault();
+        statTotal.innerText = total;
+        statPending.innerText = pending;
+        statCancelled.innerText = cancelled;
+    }
 
-    const name = document.getElementById("resName").value.trim();
-    const guests = document.getElementById("resGuests").value;
-    const datetime = document.getElementById("resDateTime").value;
+    // FUNCTION TO ADD A NEW RESERVATION
+    const addForm = document.getElementById('addReservationForm');
+    if (addForm) {
+        addForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Stops the page from refreshing
 
-    if (!name || !guests || !datetime) return;
+            const name = document.getElementById('resName').value;
+            const guests = document.getElementById('resGuests').value;
+            const dateTime = document.getElementById('resDateTime').value;
 
-    const newReservation = {
-        name,
-        guests,
-        datetime,
-        status: "pending"
-    };
+            // Create a new row
+            const newRow = document.createElement('tr');
+            newRow.className = 'res-row';
+            newRow.setAttribute('data-status', 'Pending'); // Default status
 
-    reservations.push(newReservation);
-    saveAndRender();
-    form.reset();
-});
+            newRow.innerHTML = `
+                <td>${name}</td>
+                <td>${guests}</td>
+                <td>${dateTime.replace('T', ' ')}</td>
+                <td class="status-text">Pending</td>
+                <td>
+                    <button class="btn-confirm">Confirm</button>
+                    <button class="btn-cancel">Cancel</button>
+                </td>
+            `;
 
-// Save + render
-function saveAndRender() {
-    localStorage.setItem("reservations", JSON.stringify(reservations));
-    renderReservations();
-}
-
-// Render ALL reservations
-function renderReservations() {
-    tableBody.innerHTML = "";
-
-    let total = reservations.length;
-    let pending = 0;
-    let cancelled = 0;
-
-    reservations.forEach((res, index) => {
-        if (res.status === "pending") pending++;
-        if (res.status === "cancelled") cancelled++;
-
-        const row = document.createElement("tr");
-
-        row.innerHTML = `
-            <td>${res.name}</td>
-            <td>${res.guests} Persons</td>
-            <td>${new Date(res.datetime).toLocaleString()}</td>
-            <td><span class="badge ${res.status}">${res.status}</span></td>
-            <td>
-                <button onclick="confirmReservation(${index})">Confirm</button>
-                <button onclick="cancelReservation(${index})">Cancel</button>
-            </td>
-        `;
-
-        tableBody.appendChild(row);
-    });
+            // Add the row to the table
+            tableBody.appendChild(newRow);
+            
+            // Clear the form and update the count
+            this.reset();
+            updateStats();
+        });
+    }
 
     
-    document.getElementById("stat-total").textContent = total;
-    document.getElementById("stat-pending").textContent = pending;
-    document.getElementById("stat-cancelled").textContent = cancelled;
-}
+    if (tableBody) {
+        tableBody.addEventListener('click', function(e) {
+            const target = e.target;
+            const row = target.closest('tr');
+            if (!row) return;
 
+            const statusText = row.querySelector('.status-text');
 
-function confirmReservation(index) {
-    reservations[index].status = "confirmed";
-    saveAndRender();
-}
+           
+            if (target.classList.contains('btn-confirm')) {
+                row.setAttribute('data-status', 'Confirmed');
+                statusText.innerText = 'Confirmed';
+                updateStats();
+            }
 
-
-function cancelReservation(index) {
-    reservations[index].status = "cancelled";
-    saveAndRender();
-}
+            if (target.classList.contains('btn-cancel')) {
+                row.setAttribute('data-status', 'Cancelled');
+                statusText.innerText = 'Cancelled';
+                updateStats();
+            }
+        });
+    }
+});
