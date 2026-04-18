@@ -3,7 +3,63 @@
    Services Page - Compact & Live Style
     */
 /*
+   2. Navbar 
+   */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 10%;
+    background: White;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    animation: fadeIn 1s ease-in;
+}
 
+.logo {
+    font-size: 26px;
+    font-weight: bold;
+    color: RoyalBlue;
+}
+
+.navbar ul {
+    display: flex;
+    list-style: none;
+}
+
+.navbar ul li {
+    margin-left: 25px;
+}
+
+.navbar ul li a {
+    text-decoration: none;
+    color: DimGray;
+    font-weight: 500;
+    transition: 0.3s;
+    position: relative;
+}
+
+/* Underline Effect by using hover */
+.navbar ul li a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: RoyalBlue;
+    transition: 0.3s;
+}
+
+.navbar ul li a:hover::after {
+    width: 100%;
+}
+
+.navbar ul li a:hover {
+    color: RoyalBlue;
+}
 
 /* 1. Category Style */
 .service-category {
