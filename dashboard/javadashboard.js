@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
+    // 1. CUSTOM ERROR MODAL SETUP
     const style = document.createElement('style');
     style.innerHTML = `
         .custom-modal-overlay {
@@ -41,67 +42,80 @@ document.addEventListener('DOMContentLoaded', () => {
         modalOverlay.style.display = 'none';
     });
 
+    // 2. DASHBOARD LOGIC
     const tableBody = document.getElementById('reservation-table-body');
     const statTotal = document.getElementById('stat-total');
     const statPending = document.getElementById('stat-pending');
     const statCancelled = document.getElementById('stat-cancelled');
     const addForm = document.getElementById('addReservationForm');
+    const filter = document.getElementById('filterCategory');
 
-    if (addForm) {
-        addForm.setAttribute('novalidate', 'true'); 
+    if (!localStorage.getItem("hawaleek_reservations")) {
+        localStorage.setItem("hawaleek_reservations", JSON.stringify([]));
     }
 
+    if (addForm) addForm.setAttribute('novalidate', 'true'); 
+
     function updateStats() {
-        const rows = document.querySelectorAll('.res-row');
-        let total = rows.length;
+        const allRes = JSON.parse(localStorage.getItem("hawaleek_reservations")) || [];
+        let total = allRes.length;
         let pending = 0;
         let cancelled = 0;
 
-        rows.forEach(row => {
-            const status = row.getAttribute('data-status');
-            if (status === 'Pending') pending++;
-            if (status === 'Cancelled') cancelled++;
+        allRes.forEach(res => {
+            if (res.status === 'Pending') pending++;
+            if (res.status === 'Cancelled') cancelled++;
         });
 
-        statTotal.innerText = total;
-        statPending.innerText = pending;
-        statCancelled.innerText = cancelled;
+        if(statTotal) statTotal.innerText = total;
+        if(statPending) statPending.innerText = pending;
+        if(statCancelled) statCancelled.innerText = cancelled;
     }
 
+    function renderTable(filterVal = "All") {
+        const allRes = JSON.parse(localStorage.getItem("hawaleek_reservations")) || [];
+        if (!tableBody) return;
+        
+        tableBody.innerHTML = ""; 
+        const filteredRes = filterVal === "All" ? allRes : allRes.filter(r => r.category === filterVal);
+
+        filteredRes.forEach((res, index) => {
+            const newRow = document.createElement('tr');
+            newRow.setAttribute('data-index', index); 
+
+            newRow.innerHTML = `
+                <td>${res.name}</td>
+                <td><strong>${res.category || 'N/A'}</strong></td>
+                <td>${res.provider || 'N/A'}</td>
+                <td>${res.guests}</td>
+                <td>${res.datetime.replace('T', ' ')}</td>
+                <td style="font-weight:bold; color:${res.status==='Confirmed'?'green':res.status==='Cancelled'?'red':'orange'}">${res.status}</td>
+                <td>
+                    <button class="btn-confirm" style="margin-right:5px;">Confirm</button>
+                    <button class="btn-cancel">Cancel</button>
+                </td>
+            `;
+            tableBody.appendChild(newRow);
+        });
+
+        updateStats();
+    }
+
+    // 3. MANUAL ADMIN FORM SUBMISSION
     if (addForm) {
         addForm.addEventListener('submit', function(e) {
             e.preventDefault(); 
-
-            const nameInput = document.getElementById('resName');
-            const guestsInput = document.getElementById('resGuests');
-            const dateTimeInput = document.getElementById('resDateTime');
-
-            const name = nameInput.value.trim(); 
-            const guests = guestsInput.value.trim(); 
-            const dateTime = dateTimeInput.value;
+            const name = document.getElementById('resName').value.trim(); 
+            const guests = document.getElementById('resGuests').value.trim(); 
+            const dateTime = document.getElementById('resDateTime').value;
+            const category = document.getElementById('resCategory').value;
+            const provider = document.getElementById('resProvider').value.trim();
 
             let errors = []; 
-
-            const nameRegex = /^[A-Za-z\s]+$/;
-            if (!name || !nameRegex.test(name)) {
-                errors.push("<b>❌ Name Error:</b> Please use ONLY letters and spaces.");
-            }
-
-            const guestsRegex = /^[1-9]\d*$/;
-            if (!guests || !guestsRegex.test(guests)) {
-                errors.push("<b>❌ Guest Error:</b> Please enter a positive number (1 or more).");
-            }
-
-            if (!dateTime) {
-                errors.push("<b>❌ Date Error:</b> Please select a date and time.");
-            } else {
-                const selectedDate = new Date(dateTime);
-                const currentDate = new Date();
-                
-                if (selectedDate <= currentDate) {
-                    errors.push("<b>❌ Date Error:</b> Please select a date and time in the future.");
-                }
-            }
+            if (!name || !/^[A-Za-z\s]+$/.test(name)) errors.push("<b>❌ Name Error:</b> Please use ONLY letters and spaces.");
+            if (!guests || !/^[1-9]\d*$/.test(guests)) errors.push("<b>❌ Guest Error:</b> Please enter a positive number.");
+            if (!dateTime || new Date(dateTime) <= new Date()) errors.push("<b>❌ Date Error:</b> Select a future date/time.");
+            if (!provider) errors.push("<b>❌ Provider Error:</b> Please enter a location.");
 
             if (errors.length > 0) {
                 modalText.innerHTML = errors.join('<br><br>');
@@ -109,47 +123,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 return; 
             }
 
-            const newRow = document.createElement('tr');
-            newRow.className = 'res-row';
-            newRow.setAttribute('data-status', 'Pending'); 
+            const newRes = { name, category, provider, guests, datetime: dateTime, status: "Pending" };
+            const allRes = JSON.parse(localStorage.getItem("hawaleek_reservations")) || [];
+            allRes.push(newRes);
+            localStorage.setItem("hawaleek_reservations", JSON.stringify(allRes));
 
-            newRow.innerHTML = `
-                <td>${name}</td>
-                <td>${guests}</td>
-                <td>${dateTime.replace('T', ' ')}</td>
-                <td class="status-text">Pending</td>
-                <td>
-                    <button class="btn-confirm">Confirm</button>
-                    <button class="btn-cancel">Cancel</button>
-                </td>
-            `;
-
-            tableBody.appendChild(newRow);
-            
             this.reset();
-            updateStats();
+            renderTable(filter ? filter.value : "All");
         });
     }
 
+    // 4. CONFIRM / CANCEL BUTTON LOGIC
     if (tableBody) {
         tableBody.addEventListener('click', function(e) {
             const target = e.target;
             const row = target.closest('tr');
             if (!row) return;
 
-            const statusText = row.querySelector('.status-text');
+            const realIndex = row.getAttribute('data-index');
+            const allRes = JSON.parse(localStorage.getItem("hawaleek_reservations")) || [];
 
             if (target.classList.contains('btn-confirm')) {
-                row.setAttribute('data-status', 'Confirmed');
-                statusText.innerText = 'Confirmed';
-                updateStats();
+                allRes[realIndex].status = "Confirmed";
+                localStorage.setItem("hawaleek_reservations", JSON.stringify(allRes));
+                renderTable(filter ? filter.value : "All");
             }
 
             if (target.classList.contains('btn-cancel')) {
-                row.setAttribute('data-status', 'Cancelled');
-                statusText.innerText = 'Cancelled';
-                updateStats();
+                allRes[realIndex].status = "Cancelled";
+                localStorage.setItem("hawaleek_reservations", JSON.stringify(allRes));
+                renderTable(filter ? filter.value : "All");
             }
         });
     }
+
+    if (filter) {
+        filter.addEventListener('change', (e) => renderTable(e.target.value));
+    }
+
+    renderTable();
 });
