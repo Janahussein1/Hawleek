@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Hawaleek | Restroom Locator </title>
+    
+    <link rel="stylesheet" href="../../css/toilets.css">
+</head>
+<body> 
+    <header> 
+        <nav class="navbar">
+            <div class="logo"> Hawaleek </div>
+            <ul> 
+                <li> <a href="../index.html"> Home </a></li>
+                <li> <a href="transport.html"> Transport </a></li>
+                <li> <a href="clinics.html"> Clinics </a></li>
+                <li> <a href="toilets.html" class="active"> Restrooms </a></li>
+                <li> <a href="booking.html"> Booking </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main> 
+        <section class="page-header">
+            <h1> Nearby Public Restrooms (Dokki) </h1>
+            <p> Explore the pins on the map to find restrooms near you. </p>
+        </section>
+
+        <section class="map-layout">
+            <div class="locations-sidebar" id="sidebarList">
+                </div>
+
+            <div class="map-container">
+                <div id="interactiveMap"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Hawaleek Project. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="toilets.js"></script>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE&callback=initMap"></script>
+</body>
+</html>
