@@ -640,3 +640,35 @@ footer {
         width: 100%; 
     }
 }
+
+
+/* 
+   Clinics Page - Healthcare Style
+   */
+
+/* 1. Header  */
+.page-header {
+    text-align: center;
+    padding: 60px 20px;
+    background: linear-gradient(135deg, #f0f4ff, #ffffff);
+    color: MidnightBlue;
+    border-bottom: 2px solid #eef2ff;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+/* 2. Directory Layout */
+.directory-layout {
+    padding: 50px 8%;
+}
+
+.services-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
+}
+
