@@ -608,3 +608,23 @@ footer {
     transform: translateY(-2px);
 }
 
+/* Extra: Floating Animation for Categories */
+@keyframes softFloat {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0); }
+}
+
+.service-category {
+    animation: fadeIn 1s ease-out;
+}
+
+/* Mobile Friendly */
+@media (max-width: 600px) {
+    .services-wrapper {
+        justify-content: center;
+    }
+    .card {
+        width: 100%; 
+    }
+}
