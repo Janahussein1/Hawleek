@@ -1,0 +1,148 @@
+
+/* 
+   Services Page - Compact & Live Style
+    */
+/*
+
+
+/* 1. Category Style */
+.service-category {
+    padding: 40px 8%;
+    animation: fadeIn 1s ease-in;
+}
+
+.service-category h2 {
+    color: MidnightBlue;
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.service-category h2::before {
+    content: '★';
+    color: OrangeRed;
+    font-size: 1.2rem;
+}
+
+/* 2. Compact Services Wrapper */
+.services-wrapper {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 20px;
+    justify-content: flex-start;
+}
+
+/* 3. style Cards */
+.card {
+    background: white;
+    width: 280px; 
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    border: 1px solid white;
+}
+
+.card:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 15px 35px rgba(65, 105, 225, 0.15);
+    border-color: RoyalBlue;
+}
+
+/* 4. Compact Image Style */
+.card img {
+    width: 100%;
+    height: 160px; 
+    object-fit: cover;
+    transition: 0.6s;
+}
+
+.card:hover img {
+    filter: brightness(1.1);
+}
+
+/* 5. Live Badge  */
+.card::after {
+    content: 'Available';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: LimeGreen (50, 205, 50, 0.9); 
+    color: white;
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    opacity: 0;
+    transition: 0.3s;
+}
+
+.card:hover::after {
+    opacity: 1;
+}
+
+/* 6. Card Content */
+.cards-content, .card-content {
+    padding: 20px;
+}
+
+.cards-content h3, .card-content h3 {
+    color: RoyalBlue;
+    font-size: 1.1rem; 
+    margin-bottom: 8px;
+}
+
+.cards-content p, .card-content p {
+    color: #666;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin-bottom: 15px;
+    height: 40px; 
+    overflow: hidden;
+}
+
+/* 7. Action Button  */
+.book-link, .explore-link {
+    display: block;
+    text-align: center;
+    padding: 10px;
+    background: whitesmoke;
+    color: RoyalBlue;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 0.85rem;
+    border: 1px solid RoyalBlue;
+    transition: 0.3s;
+}
+
+.book-link:hover, .explore-link:hover {
+    background: RoyalBlue;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Extra: Floating Animation for Categories */
+@keyframes softFloat {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0); }
+}
+
+.service-category {
+    animation: fadeIn 1s ease-out;
+}
+
+/* Mobile Friendly */
+@media (max-width: 600px) {
+    .services-wrapper {
+        justify-content: center;
+    }
+    .card {
+        width: 100%; 
+    }
+}
+
