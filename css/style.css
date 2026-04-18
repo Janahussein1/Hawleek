@@ -484,3 +484,53 @@ footer {
     100% { transform: translateY(0px); }
 }
 
+/* 
+   Services Page - Compact & Live Style
+    */
+
+/* 1. Category Style */
+.service-category {
+    padding: 40px 8%;
+    animation: fadeIn 1s ease-in;
+}
+
+.service-category h2 {
+    color: MidnightBlue;
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.service-category h2::before {
+    content: '★';
+    color: OrangeRed;
+    font-size: 1.2rem;
+}
+
+/* 2. Compact Services Wrapper */
+.services-wrapper {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 20px;
+    justify-content: flex-start;
+}
+
+/* 3. style Cards */
+.card {
+    background: white;
+    width: 280px; 
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    border: 1px solid white;
+}
+
+.card:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 15px 35px rgba(65, 105, 225, 0.15);
+    border-color: RoyalBlue;
+}
