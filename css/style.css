@@ -404,40 +404,50 @@ footer {
 .routes-grid {
     display: flex;
     flex-direction: column;
-    gap: 50px;
-    padding: 60px 10%;
+    gap: 30px;
+    padding: 40px 10%;
 }
 
 .route-card {
     display: flex;
     align-items: center;
     background: White;
-    border-radius: 100px 40px 40px 100px;
-    padding: 25px;
-    box-shadow: 15px 15px 40px rgba(0,0,0,0.05);
+    border-radius:  100px;
+    padding: 20px 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     transition: 0.5s ease;
     animation: floating 5s ease-in-out infinite;
+    min-height: 140px; 
+    border-left: 10px solid RoyalBlue;
 }
 
 .route-card:nth-child(even) {
     flex-direction: row-reverse;
-    border-radius: 40px 100px 100px 40px;
+    border-left: none;
+    border-right: 10px solid OrangeRed;
 }
+
+.route-card:nth-child(even) .route-info {
+    text-align: right;
+}
+
+.route-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 15px 40px rgba(65, 105, 225, 0.1);
+}
+
 
 .route-img-wrapper {
-    width: 140px;
-    height: 140px;
-    min-width: 140px;
+    width: 110px;
+    height: 110px;
+    min-width: 110px;
     border-radius: 50%;
     overflow: hidden;
-    border: 6px solid White;
+    border: 5px solid White;
     box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-    transform: scale(1.15);
+   
 }
 
-.route-card:hover .route-img-wrapper {
-    transform: scale(1.25) rotate(5deg);
-}
 
 .route-img-wrapper img {
     width: 100%;
@@ -446,19 +456,21 @@ footer {
 }
 
 .route-info {
-    padding: 0 60px;
+    padding: 0 30px;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    text-align: left;
 }
 
 .route-card strong{
     display: block;
     font-size: 1.6rem;
     color: MidnightBlue;
-    margin-bottom: 8px;
+    margin-bottom: 5px;
 }
+
 
 /*
    6. Badges
