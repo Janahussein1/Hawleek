@@ -16,11 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
             linkText: "Request service"
         },
         {
-            name: "Local Transport Hub",
-            description: "Track microbuses and find the nearest stations in real-time.",
-            image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800",
-            link: "pages/transport.html",
-            linkText: "View Schedule"
+          
         }
     ];
 
