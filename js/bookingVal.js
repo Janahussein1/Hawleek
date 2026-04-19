@@ -75,20 +75,10 @@ document.addEventListener("DOMContentLoaded", () => {
             alert(`Success! Your booking request for ${fullName} has been submitted.`);
             appointmentForm.reset(); 
             
+            // Reset dynamic fields back to default
             serviceTypeLabel.textContent = "Type of Service:";
             serviceTypeInput.type = "text";
             serviceTypeInput.placeholder = "e.g. Table for 4, or AC Repair";
-        });
-    }
-
-    const stationInput = document.querySelector('input[type="number"]');
-    
-    if (stationInput && stationInput.id !== "serviceType") {
-        stationInput.addEventListener("input", function() {
-            if (this.value < 0) {
-                alert("Number of stations or KMs cannot be a negative number!");
-                this.value = 1; 
-            }
         });
     }
 });
