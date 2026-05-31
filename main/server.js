@@ -7,6 +7,9 @@ require('dotenv').config();
 
 const app = express();
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '..', 'views'));
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -22,6 +25,16 @@ app.use(session({
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('MongoDB Connected'))
     .catch(err => console.log(err));
+
+const pageViews = ['booking', 'clinics', 'services', 'toilets', 'transport', 'mosques'];
+
+app.get('/pages/:pageName.html', (req, res) => {
+    const pageName = req.params.pageName;
+    if (!pageViews.includes(pageName)) {
+        return res.status(404).send('Page not found');
+    }
+    res.render(`pages/${pageName}`);
+});
 
 app.use('/api/bookings', require('./routes/bookingRoutes'));
 app.use('/api/businesses', require('./routes/businessRoutes')); // Person 2 will handle this file
