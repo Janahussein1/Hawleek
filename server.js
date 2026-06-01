@@ -22,7 +22,6 @@ i18n.configure({
 connectDB();
 
 const app = express();
-app.set('trust proxy', 1);
 
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -52,6 +51,19 @@ app.use(i18n.init);
 
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+app.get('/', (req, res) => {
+  res.render('index');
+});
+
+// Dashboard routes (render EJS templates)
+app.get('/dashboard', (req, res) => {
+  res.render('dashboard');
+});
+
+app.get('/dashboard/login', (req, res) => {
+  res.render('login');
+});
 
 app.use('/api/auth',      authLimiter, require('./routes/auth'));
 app.use('/api/users',     require('./routes/user'));

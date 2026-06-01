@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
           } else if (data.user.role === 'business_owner') {
             window.location.href = '/dashboard/owner.html';
           } else {
-            window.location.href = '/Homepage /index.html';
+            window.location.href = '/';
           }
         }, 1000);
       } catch (err) {
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (data.user.role === 'business_owner') {
             window.location.href = '/dashboard/owner.html';
           } else {
-            window.location.href = '/Homepage /index.html';
+            window.location.href = '/';
           }
         }, 1200);
       } catch (err) {

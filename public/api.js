@@ -87,7 +87,7 @@ function requireRole(...roles) {
   const user = getUser();
   if (!user || !roles.includes(user.role)) {
     showToast('Access denied', 'error');
-    setTimeout(() => (window.location.href = '/Homepage /index.html'), 1500);
+    setTimeout(() => (window.location.href = '/'), 1500);
   }
 }
 
@@ -114,7 +114,7 @@ function updateNav() {
 function logout() {
   clearAuth();
   showToast('Logged out successfully');
-  setTimeout(() => (window.location.href = '/Homepage /index.html'), 1000);
+  setTimeout(() => (window.location.href = '/'), 1000);
 }
 
 function renderPagination(containerId, pagination, onPageChange) {

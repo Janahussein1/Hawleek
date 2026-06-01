@@ -28,8 +28,7 @@ async function loadMyBookings(page = 1) {
     const bookings = data.data;
 
     if (bookings.length === 0) {
-      container.innerHTML = '<p style="color:#888">No bookings yet. <a href="/Homepage /index.html">Explore places</a></p>';
-      return;
+      container.innerHTML = '<p style="color:#888">No bookings yet. <a href="/">Explore places</a></p>';
     }
 
     container.innerHTML = bookings.map(b => {
