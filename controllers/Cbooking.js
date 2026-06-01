@@ -1,10 +1,11 @@
 const Booking = require('../models/Booking');
 const Place = require('../models/Place');
 const AppError = require('../utils/AppError');
+const { sendBookingConfirmation } = require('../utils/email');
 
 // ── @route   POST /api/bookings ───────────────────────────────────────────────
 exports.createBooking = async (req, res, next) => {
-  const { placeId, type, date, time, partySize, notes, routeIndex, seatsBooked } = req.body;
+  const { placeId, type, date, time, partySize, notes, routeIndex, seatsBooked, contactEmail } = req.body;
 
   const place = await Place.findById(placeId);
   if (!place || !place.isActive) return next(new AppError('Place not found', 404));
@@ -41,6 +42,7 @@ exports.createBooking = async (req, res, next) => {
     time,
     partySize: partySize || 1,
     notes,
+    contactEmail: contactEmail || undefined,
     routeIndex: routeIndex !== undefined ? routeIndex : null,
     seatsBooked: seatsBooked || 1,
     totalPrice,
@@ -49,6 +51,24 @@ exports.createBooking = async (req, res, next) => {
   await booking.populate('place', 'name type address phone');
 
   res.status(201).json({ success: true, data: booking, message: 'Booking created successfully' });
+
+  const recipientEmail = contactEmail?.trim() || req.user.email;
+  const placeName = place.name || 'Restaurant';
+  sendBookingConfirmation({
+    userEmail: req.user.email,
+    userName: req.user.name,
+    booking,
+    placeName,
+  }).catch(err => console.error('Booking confirmation email failed:', err));
+
+  if (recipientEmail && recipientEmail !== req.user.email) {
+    sendBookingConfirmation({
+      userEmail: recipientEmail,
+      userName: req.user.name,
+      booking,
+      placeName,
+    }).catch(err => console.error('Booking confirmation email failed:', err));
+  }
 };
 
 // ── @route   GET /api/bookings/:id ───────────────────────────────────────────

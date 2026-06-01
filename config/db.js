@@ -6,7 +6,8 @@ const connectDB = async () => {
     console.log(`✅ MongoDB connected: ${conn.connection.host}`);
   } catch (err) {
     console.error(`❌ MongoDB connection error: ${err.message}`);
-    process.exit(1);
+    // Continue starting the server even if MongoDB is unavailable,
+    // so EJS pages can still render locally for development.
   }
 };
 

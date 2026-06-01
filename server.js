@@ -22,7 +22,17 @@ i18n.configure({
 connectDB();
 
 const app = express();
+app.set('trust proxy', 1);
 
+app.set('view engine', 'ejs');
+app.set('views', [path.join(__dirname, 'main'), path.join(__dirname, 'views')]); // Ensure this path matches your folder structure
+app.use('/css', express.static(path.join(__dirname, 'css')));
+app.use('/js', express.static(path.join(__dirname, 'js')));
+app.use('/dashboard', express.static(path.join(__dirname, 'dashboard')));
+app.use('/photos', express.static(path.join(__dirname, 'photos')));
+app.use('/public', express.static(path.join(__dirname, 'public')));
+
+ 
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 200,
@@ -52,19 +62,28 @@ app.use(i18n.init);
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Keep your authentication route
+app.use('/api/auth', authLimiter); // Make sure to complete this line if it got cut off
+
+// Keep the incoming UI routes
 app.get('/', (req, res) => {
-  res.render('index');
+    res.render('index');
 });
 
 // Dashboard routes (render EJS templates)
 app.get('/dashboard', (req, res) => {
-  res.render('dashboard');
+    res.render('dashboard');
 });
+
 
 app.get('/dashboard/login', (req, res) => {
   res.render('login');
 });
+app.get('/dashboard/login.ejs', (req, res) => {
+  res.render('login');
+});
 
+ 
 app.use('/api/auth',      authLimiter, require('./routes/auth'));
 app.use('/api/users',     require('./routes/user'));
 app.use('/api/transport', require('./routes/transport'));
@@ -75,6 +94,32 @@ app.use('/api/weather',   require('./routes/weather'));
 // app.use('/api/places',    require('./routes/place'));
 // app.use('/api/bookings',  require('./routes/booking'));
 // app.use('/api/reviews',   require('./routes/review'));
+
+// Public page routes (render views/pages/*.ejs)
+app.get('/services', (req, res) => res.render('pages/services'));
+app.get('/booking',  (req, res) => res.render('pages/booking'));
+app.get('/clinics',  (req, res) => res.render('pages/clinicBooking'));
+app.get('/transport',(req, res) => res.render('pages/transport'));
+app.get('/mosques',  (req, res) => res.render('pages/mosques'));
+app.get('/toilets',  (req, res) => res.render('pages/toilets'));
+
+// Also allow direct .ejs-style links (so `/pages/services.ejs` works)
+app.get('/pages/services.ejs', (req, res) => res.render('pages/services'));
+app.get('/pages/booking.ejs',  (req, res) => res.render('pages/booking'));
+app.get('/pages/clinics.ejs',  (req, res) => res.render('pages/clinicBooking'));
+app.get('/pages/transport.ejs',(req, res) => res.render('pages/transport'));
+app.get('/pages/mosques.ejs',  (req, res) => res.render('pages/mosques'));
+app.get('/pages/toilets.ejs',  (req, res) => res.render('pages/toilets'));
+
+app.use('/api/auth',      authLimiter, require('./routes/auth'));
+app.use('/api/users',     require('./routes/user'));
+app.use('/api/places',    require('./routes/Rplace'));
+app.use('/api/bookings',  require('./routes/Rbooking'));
+app.use('/api/reviews',   require('./routes/Rreview'));
+app.use('/api/transport', require('./routes/transport'));
+app.use('/api/admin',     require('./routes/admin'));
+app.use('/api/weather',   require('./routes/weather'));
+
 
 app.get('/api/health', (req, res) => {
   res.json({

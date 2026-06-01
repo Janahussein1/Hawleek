@@ -5,21 +5,21 @@ document.addEventListener("DOMContentLoaded", () => {
             name: "Neighborhood Pizzeria",
             description: "Authentic wood-fired pizza right around the corner.",
             image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800",
-            link: "pages/booking.html",
+            link: "/pages/booking.ejs",
             linkText: "Book a Table"
         },
         {
             name: "Sayed Electric & Plumbing",
             description: "Reliable home maintenance and emergency repairs.",
             image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800",
-            link: "pages/booking.html",
+            link: "/pages/booking.ejs",
             linkText: "Request service"
         },
         {
             name: "Local Transport Hub",
             description: "Track microbuses and find the nearest stations in real-time.",
             image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800",
-            link: "pages/transport.html",
+            link: "/pages/transport.ejs",
             linkText: "View Schedule"
         }
     ];

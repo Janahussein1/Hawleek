@@ -18,9 +18,26 @@ const bookingSchema = new mongoose.Schema(
       enum: ['pending', 'confirmed', 'completed', 'cancelled'],
       default: 'pending',
     },
-    routeIndex: { type: Number, default: null },
-    seatsBooked: { type: Number, default: 1 },
-    totalPrice: { type: Number, default: 0 },
+
+    // For transport seat bookings (Consolidated fields)
+    routeIndex: {
+      type: Number,
+      default: null,
+    },
+    seatsBooked: {
+      type: Number,
+      default: 1,
+    },
+    totalPrice: {
+      type: Number,
+      default: 0,
+    },
+    contactEmail: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email address'],
+    },
   },
   { timestamps: true }
 );

@@ -1,6 +1,6 @@
 
 // Change this to your deployed backend URL when you deploy
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = window.location.origin + '/api';
 
 
 const getToken = () => localStorage.getItem('hawleek_token');

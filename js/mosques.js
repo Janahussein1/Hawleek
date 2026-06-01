@@ -2,21 +2,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const mosquesData = [
         {
             name: "Al-Rahman Mosque",
-            description: "Main Street, 5 mins away.",
-            image: "mosque.jpg",
+            description: "Main Street, 5 mins walk from Dokki Square.",
+            image: "/photos/mosque.jpg",
             status: "Open Now",
-            actionText: "Get Directions",
-            contactText: "Call Imam",
-            phone: "+20123456789"
+            directionsText: "Head south on Dokki Street, turn left at Main Street, then continue 350m to the mosque.",
+            directionsLink: "https://www.google.com/maps/dir/?api=1&destination=30.0384,31.2114&travelmode=walking"
         },
         {
             name: "Al-Nour Mosque",
-            description: "West District, has women's prayer area.",
-            image: "mosque2.jpg",
+            description: "West District, women-friendly prayer hall.",
+            image: "/photos/mosque2.jpg",
             status: "Friday Prayers",
-            actionText: "Get Directions",
-            contactText: "Call Imam",
-            phone: "+20198765432"
+            directionsText: "From West Avenue, turn right at Market Street and walk 600m to the mosque entrance.",
+            directionsLink: "https://www.google.com/maps/dir/?api=1&destination=30.0396,31.2008&travelmode=walking"
         }
     ];
 
@@ -33,8 +31,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         <span class="status-tag">${mosque.status}</span>
                         <h3>${mosque.name}</h3>
                         <p>${mosque.description}</p>
-                        <a href="directions.html" class="book-link">${mosque.actionText}</a>
-                        <a href="tel:${mosque.phone}" class="call-link">${mosque.contactText}</a>
+                        <p class="directions-note">${mosque.directionsText}</p>
+                        <a href="${mosque.directionsLink}" target="_blank" rel="noreferrer" class="book-link">Open Route</a>
                     </div>
                 </article>
             `;

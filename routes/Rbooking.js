@@ -14,6 +14,7 @@ const bookingRules = [
   body('date').isISO8601().withMessage('Invalid date format').toDate(),
   body('time').notEmpty().withMessage('Time is required'),
   body('partySize').optional().isInt({ min: 1 }).withMessage('Party size must be a positive integer'),
+  body('contactEmail').optional({ checkFalsy: true }).isEmail().withMessage('Invalid email address'),
 ];
 
 router.use(protect); // All booking routes require auth
