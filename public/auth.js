@@ -1,9 +1,8 @@
-// ── auth.js — handles login & register pages ─────────────────────────────────
+
 // Include api.js BEFORE this file in your HTML
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  // ── LOGIN FORM ──────────────────────────────────────────────────────────────
   const loginForm = document.getElementById('login-form');
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
@@ -14,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const email    = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
 
-      // Frontend validation
+     
       if (!email || !password) {
         showToast('Please fill in all fields', 'error');
         hideSpinner(btn);
@@ -26,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setAuth(data.token, data.user);
         showToast('Welcome back, ' + data.user.name + '!');
 
-        // Redirect based on role
+        
         setTimeout(() => {
           if (data.user.role === 'admin') {
             window.location.href = '/dashboard/admin.html';
@@ -44,7 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ── REGISTER FORM ───────────────────────────────────────────────────────────
   const registerForm = document.getElementById('register-form');
   if (registerForm) {
     registerForm.addEventListener('submit', async (e) => {
@@ -61,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const phone        = document.getElementById('phone')?.value.trim();
       const businessName = document.getElementById('business-name')?.value.trim();
 
-      // Frontend validation
+     
       if (!name || !email || !password) {
         showToast('Please fill in all required fields', 'error');
         hideSpinner(btn);
@@ -109,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Show/hide business name field based on role selection
+    
     const roleSelect = document.getElementById('role');
     const businessField = document.getElementById('business-name-group');
     if (roleSelect && businessField) {
