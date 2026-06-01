@@ -1,4 +1,4 @@
-// ── dashboard.js — all three role dashboards ──────────────────────────────────
+
 // Include api.js BEFORE this file in your HTML
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -10,9 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   else                                     loadResidentDashboard();
 });
 
-// ╔══════════════════════════════════════════════════════════════════════════════
-// ║  RESIDENT DASHBOARD
-// ╚══════════════════════════════════════════════════════════════════════════════
+
 async function loadResidentDashboard() {
   const user = getUser();
   const nameEl = document.getElementById('user-name');
@@ -153,7 +151,7 @@ async function loadProfile() {
     }
   });
 
-  // Avatar upload
+ 
   const avatarInput = document.getElementById('avatar-input');
   if (avatarInput) {
     avatarInput.addEventListener('change', async (e) => {
@@ -172,7 +170,6 @@ async function loadProfile() {
     });
   }
 
-  // Change password form
   const pwForm = document.getElementById('change-password-form');
   if (pwForm) {
     pwForm.addEventListener('submit', async (e) => {
@@ -205,9 +202,7 @@ async function loadProfile() {
   }
 }
 
-// ╔══════════════════════════════════════════════════════════════════════════════
-// ║  BUSINESS OWNER DASHBOARD
-// ╚══════════════════════════════════════════════════════════════════════════════
+
 async function loadOwnerDashboard() {
   requireRole('business_owner', 'admin');
   await loadMyPlaces();
@@ -259,7 +254,7 @@ async function viewPlaceBookings(placeId, placeName) {
   if (header) header.textContent = `Bookings for ${placeName}`;
   container.innerHTML = '<p style="color:#888">Loading bookings...</p>';
 
-  // scroll into view
+  
   container.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   try {
@@ -327,11 +322,11 @@ async function deleteMyPlace(placeId) {
   }
 }
 
-// ── Edit Place ─────────────────────────────────────────────────────────────────
+
 async function openEditPlace(placeId) {
   const panel = document.getElementById('edit-place-panel');
   if (!panel) {
-    // Create the panel dynamically if it doesn't exist in the HTML
+    
     createEditPanel(placeId);
     return;
   }
@@ -350,7 +345,7 @@ async function openEditPlace(placeId) {
 }
 
 async function createEditPanel(placeId) {
-  // Inject a modal-style panel
+  
   const existing = document.getElementById('edit-place-modal');
   if (existing) existing.remove();
 
@@ -468,7 +463,7 @@ function setupEditFormSubmit(placeId, container) {
   });
 }
 
-// ── Add Place Form ────────────────────────────────────────────────────────────
+
 function setupAddPlaceForm() {
   const addPlaceForm = document.getElementById('add-place-form');
   if (!addPlaceForm) return;
@@ -492,9 +487,7 @@ function setupAddPlaceForm() {
   });
 }
 
-// ╔══════════════════════════════════════════════════════════════════════════════
-// ║  ADMIN DASHBOARD
-// ╚══════════════════════════════════════════════════════════════════════════════
+
 async function loadAdminDashboard() {
   requireRole('admin');
 
