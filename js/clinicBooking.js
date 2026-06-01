@@ -1,4 +1,4 @@
-const clinicMap = {};
+let clinicMap = {};
 let selectedClinic = null;
 
 function escapeHtml(text) {
@@ -135,9 +135,7 @@ async function handleAppointmentSubmit(event) {
   }
 
   if (!getToken()) {
-    showToast('Please login before booking an appointment', 'error');
-    setTimeout(() => (window.location.href = '/dashboard/login'), 1500);
-    return;
+    // Allow guest appointment bookings — continue and post to guest endpoint
   }
 
   const name = document.getElementById('appointment-name')?.value.trim();
@@ -190,7 +188,7 @@ async function handleAppointmentSubmit(event) {
 
     console.log('🏥 Submitting appointment:', bookingData);
 
-    const response = await API.post('/bookings', bookingData);
+    const response = getToken() ? await API.post('/bookings', bookingData) : await API.post('/bookings/guest', { ...bookingData, name });
 
     console.log('✅ Appointment created:', response);
 

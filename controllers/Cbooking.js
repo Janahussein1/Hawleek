@@ -1,7 +1,9 @@
 const Booking = require('../models/Booking');
 const Place = require('../models/Place');
+const User = require('../models/User');
 const AppError = require('../utils/AppError');
 const { sendBookingConfirmation } = require('../utils/email');
+const crypto = require('crypto');
 
 // ── @route   POST /api/bookings ───────────────────────────────────────────────
 exports.createBooking = async (req, res, next) => {
@@ -69,6 +71,70 @@ exports.createBooking = async (req, res, next) => {
       placeName,
     }).catch(err => console.error('Booking confirmation email failed:', err));
   }
+};
+
+// Guest booking endpoint: creates or reuses a user by email, then creates a booking
+exports.createGuestBooking = async (req, res, next) => {
+  const { placeId, type, date, time, partySize, notes, routeIndex, seatsBooked, contactEmail, name } = req.body;
+
+  const place = await Place.findById(placeId);
+  if (!place || !place.isActive) return next(new AppError('Place not found', 404));
+
+  // Prevent booking in the past
+  const bookingDate = new Date(date);
+  if (bookingDate < new Date().setHours(0, 0, 0, 0)) {
+    return next(new AppError('Cannot book a date in the past', 400));
+  }
+
+  // Ensure contact email provided
+  if (!contactEmail || !/\S+@\S+\.\S+/.test(contactEmail)) {
+    return next(new AppError('Contact email is required for guest bookings', 400));
+  }
+
+  // Find or create a user account for this guest email
+  let user = await User.findOne({ email: contactEmail.toLowerCase() });
+  if (!user) {
+    const randomPass = crypto.randomBytes(12).toString('hex');
+    user = await User.create({ name: name || 'Guest', email: contactEmail.toLowerCase(), password: randomPass });
+  }
+
+  let totalPrice = 0;
+
+  if (type === 'seat' && routeIndex !== undefined) {
+    const route = place.routes[routeIndex];
+    if (!route) return next(new AppError('Route not found', 404));
+
+    const seats = seatsBooked || 1;
+    if (route.availableSeats < seats) {
+      return next(new AppError(`Only ${route.availableSeats} seats available`, 400));
+    }
+
+    place.routes[routeIndex].availableSeats -= seats;
+    await place.save();
+    totalPrice = route.price * seats;
+  }
+
+  const booking = await Booking.create({
+    user: user._id,
+    place: placeId,
+    type,
+    date: bookingDate,
+    time,
+    partySize: partySize || 1,
+    notes,
+    contactEmail: contactEmail || undefined,
+    routeIndex: routeIndex !== undefined ? routeIndex : null,
+    seatsBooked: seatsBooked || 1,
+    totalPrice,
+  });
+
+  await booking.populate('place', 'name type address phone');
+
+  res.status(201).json({ success: true, data: booking, message: 'Guest booking created successfully' });
+
+  const recipientEmail = contactEmail.trim();
+  const placeName = place.name || 'Restaurant';
+  sendBookingConfirmation({ userEmail: recipientEmail, userName: name || user.name, booking, placeName }).catch(err => console.error('Booking confirmation email failed:', err));
 };
 
 // ── @route   GET /api/bookings/:id ───────────────────────────────────────────

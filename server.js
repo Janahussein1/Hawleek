@@ -62,9 +62,6 @@ app.use(i18n.init);
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Keep your authentication route
-app.use('/api/auth', authLimiter); // Make sure to complete this line if it got cut off
-
 // Keep the incoming UI routes
 app.get('/', (req, res) => {
     res.render('index');
@@ -84,12 +81,6 @@ app.get('/dashboard/login.ejs', (req, res) => {
 });
 
  
-app.use('/api/auth',      authLimiter, require('./routes/auth'));
-app.use('/api/users',     require('./routes/user'));
-app.use('/api/transport', require('./routes/transport'));
-app.use('/api/admin',     require('./routes/admin'));
-app.use('/api/weather',   require('./routes/weather'));
-
 // TODO: add routes for places, bookings, and reviews if your app should expose those endpoints.
 // app.use('/api/places',    require('./routes/place'));
 // app.use('/api/bookings',  require('./routes/booking'));
@@ -115,10 +106,12 @@ app.use('/api/auth',      authLimiter, require('./routes/auth'));
 app.use('/api/users',     require('./routes/user'));
 app.use('/api/places',    require('./routes/Rplace'));
 app.use('/api/bookings',  require('./routes/Rbooking'));
+app.use('/api/bookings/guest', require('./routes/guestBooking'));
 app.use('/api/reviews',   require('./routes/Rreview'));
 app.use('/api/transport', require('./routes/transport'));
 app.use('/api/admin',     require('./routes/admin'));
 app.use('/api/weather',   require('./routes/weather'));
+app.use('/api/contact',   require('./routes/contact'));
 
 
 app.get('/api/health', (req, res) => {
@@ -137,6 +130,12 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`✅ Hawleek server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
-});
+
+const startServer = async () => {
+  await connectDB();
+  app.listen(PORT, () => {
+    console.log(`✅ Hawleek server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
+  });
+};
+
+startServer();

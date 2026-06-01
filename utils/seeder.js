@@ -7,9 +7,8 @@ const Place   = require('../models/Place');
 const Booking = require('../models/Booking');
 const Review  = require('../models/Review');
 
-connectDB();
-
 const seed = async () => {
+  await connectDB();
   try {
     // Clear existing data
     await Promise.all([

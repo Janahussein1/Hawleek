@@ -247,6 +247,47 @@ body {
     transition: 0.3s;
 }
 
+/* Homepage buttons */
+.primary-btn {
+    background: #0f6e56;
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    text-decoration: none;
+}
+.primary-btn:hover { background:#0e5f48 }
+
+.secondary-btn {
+    background: #f3f4f6;
+    color: #111827;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+/* Hero & About layout */
+#hero { padding: 56px 24px; }
+#about { background: #fff; }
+
+/* Search results cards */
+#search-results { margin-top: 16px; }
+#search-results .card { display:flex; gap:16px; align-items:flex-start }
+#search-results .card img { width:160px; height:100px; object-fit:cover }
+
+/* Contact form */
+#contact-form, #contact-form input, #contact-form textarea { width:100% }
+#contact-form input, #contact-form textarea { padding:10px;border:1px solid #e6eef0;border-radius:8px }
+
+@media (max-width: 900px) {
+    #search-results .card { flex-direction:column }
+    #search-results .card img { width:100%; height:180px }
+}
+
 .book-link:hover {
     letter-spacing: 1px;
 }

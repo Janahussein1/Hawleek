@@ -1,4 +1,4 @@
-const restaurantMap = {};
+let restaurantMap = {};
 let selectedRestaurant = null;
 
 function escapeHtml(text) {
@@ -134,9 +134,9 @@ async function handleReservationSubmit(event) {
   }
 
   if (!getToken()) {
-    showToast('Please login before making a reservation', 'error');
-    setTimeout(() => (window.location.href = '/dashboard/login'), 1500);
-    return;
+    // Allow guest booking: proceed and post to guest booking endpoint
+    // showToast('You are booking as a guest. A confirmation email will be sent.', 'info');
+    // continue
   }
 
   const name = document.getElementById('reservation-name')?.value.trim();
@@ -184,7 +184,7 @@ async function handleReservationSubmit(event) {
 
     console.log('📅 Submitting booking:', bookingData);
 
-    const response = await API.post('/bookings', bookingData);
+    const response = getToken() ? await API.post('/bookings', bookingData) : await API.post('/bookings/guest', { ...bookingData, name: name });
 
     console.log('✅ Booking created:', response);
 

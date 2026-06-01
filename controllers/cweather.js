@@ -1,7 +1,5 @@
-const fetch = require('node-fetch');
+const fetch = global.fetch || require('node-fetch');
 const AppError = require('../utils/AppError');
-
-
 
 exports.getWeather = async (req, res, next) => {
   const city = req.query.city || process.env.WEATHER_CITY || 'Cairo';

@@ -1,37 +1,61 @@
 const nodemailer = require('nodemailer');
 
-const createTransporter = () => {
-  // If no email config, return null (emails will be skipped gracefully)
-  if (!process.env.EMAIL_USER || process.env.EMAIL_USER === 'your_email@gmail.com') {
-    return null;
+const createTransporter = async () => {
+  // If environment provides SMTP credentials, use them
+  if (process.env.EMAIL_USER && process.env.EMAIL_USER !== 'your_email@gmail.com') {
+    return nodemailer.createTransport({
+      host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+      port: parseInt(process.env.EMAIL_PORT) || 587,
+      secure: false,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
   }
 
-  return nodemailer.createTransport({
-    host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-    port: parseInt(process.env.EMAIL_PORT) || 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+  // No SMTP configured — create an Ethereal test account for development
+  try {
+    const testAccount = await nodemailer.createTestAccount();
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.ethereal.email',
+      port: 587,
+      secure: false,
+      auth: {
+        user: testAccount.user,
+        pass: testAccount.pass,
+      },
+    });
+    console.log('📧 No SMTP credentials found — using Ethereal test account for email (dev only).');
+    return transporter;
+  } catch (err) {
+    console.warn('⚠️ Failed to create test email account:', err.message);
+    return null;
+  }
 };
 
 const sendEmail = async ({ to, subject, html }) => {
-  const transporter = createTransporter();
+  const transporter = await createTransporter();
   if (!transporter) {
-    console.log(`📧 [EMAIL SKIPPED — no SMTP config] To: ${to} | Subject: ${subject}`);
+    console.log(`📧 [EMAIL SKIPPED — no SMTP available] To: ${to} | Subject: ${subject}`);
     return;
   }
 
-  await transporter.sendMail({
-    from: process.env.EMAIL_FROM || 'Hawleek <noreply@hawleek.com>',
-    to,
-    subject,
-    html,
-  });
+  try {
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL_FROM || 'Hawleek <noreply@hawleek.com>',
+      to,
+      subject,
+      html,
+    });
 
-  console.log(`📧 Email sent to ${to}`);
+    console.log(`📧 Email queued: ${subject} -> ${to}`);
+    // If using Ethereal, print preview URL
+    const preview = nodemailer.getTestMessageUrl(info);
+    if (preview) console.log(`📨 Preview URL: ${preview}`);
+  } catch (err) {
+    console.error('❌ Email send failed:', err.message);
+  }
 };
 
 const sendBookingConfirmation = async ({ userEmail, userName, booking, placeName }) => {
