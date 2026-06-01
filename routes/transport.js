@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/auth');
-const { getStations, getRoutes, getSeatsAvailability, updateRoutes } = require('../controllers/transport.controller');
+const { getStations, getRoutes, getSeatsAvailability, updateRoutes } = require('../controllers/ctransport');
 
 
 router.get('/stations',                               getStations);

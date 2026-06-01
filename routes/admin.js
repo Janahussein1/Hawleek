@@ -5,7 +5,7 @@ const {
   getDashboard, getAllUsers, updateUserRole, toggleUserStatus,
   getAllPlaces, verifyPlace, adminDeletePlace,
   getAllBookings, deleteReview,
-} = require('../controllers/admin.controller');
+} = require('../controllers/cadmin');
 
 
 router.use(protect, authorize('admin'));

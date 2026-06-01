@@ -5,7 +5,7 @@ const { uploadSingle } = require('../middleware/upload');
 const {
   getProfile, updateProfile, uploadAvatar,
   getMyBookings, getMyReviews, deleteAccount,
-} = require('../controllers/user.controller');
+} = require('../controllers/cuser');
 
 router.use(protect); // All user routes require auth
 

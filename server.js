@@ -22,6 +22,7 @@ i18n.configure({
 connectDB();
 
 const app = express();
+app.set('trust proxy', 1);
 
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -52,14 +53,16 @@ app.use(i18n.init);
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-app.use('/api/auth',      authLimiter, require('./routes/auth.routes'));
-app.use('/api/users',     require('./routes/user.routes'));
-app.use('/api/places',    require('./routes/place.routes'));
-app.use('/api/bookings',  require('./routes/booking.routes'));
-app.use('/api/reviews',   require('./routes/review.routes'));
-app.use('/api/transport', require('./routes/transport.routes'));
-app.use('/api/admin',     require('./routes/admin.routes'));
-app.use('/api/weather',   require('./routes/weather.routes'));
+app.use('/api/auth',      authLimiter, require('./routes/auth'));
+app.use('/api/users',     require('./routes/user'));
+app.use('/api/transport', require('./routes/transport'));
+app.use('/api/admin',     require('./routes/admin'));
+app.use('/api/weather',   require('./routes/weather'));
+
+// TODO: add routes for places, bookings, and reviews if your app should expose those endpoints.
+// app.use('/api/places',    require('./routes/place'));
+// app.use('/api/bookings',  require('./routes/booking'));
+// app.use('/api/reviews',   require('./routes/review'));
 
 app.get('/api/health', (req, res) => {
   res.json({
