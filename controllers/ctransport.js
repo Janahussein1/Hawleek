@@ -1,7 +1,7 @@
 const Place = require('../models/Place');
 const AppError = require('../utils/AppError');
 
-// ── @route   GET /api/transport/stations ─────────────────────────────────────
+
 exports.getStations = async (req, res) => {
   const { neighborhood } = req.query;
   const filter = { type: 'station', isActive: true };
@@ -11,7 +11,7 @@ exports.getStations = async (req, res) => {
   res.json({ success: true, data: stations });
 };
 
-// ── @route   GET /api/transport/stations/:id/routes ──────────────────────────
+
 exports.getRoutes = async (req, res, next) => {
   const station = await Place.findById(req.params.id);
   if (!station || station.type !== 'station') return next(new AppError('Station not found', 404));
@@ -19,7 +19,7 @@ exports.getRoutes = async (req, res, next) => {
   res.json({ success: true, data: station.routes });
 };
 
-// ── @route   GET /api/transport/stations/:id/routes/:routeIndex/seats ─────────
+
 exports.getSeatsAvailability = async (req, res, next) => {
   const station = await Place.findById(req.params.id);
   if (!station || station.type !== 'station') return next(new AppError('Station not found', 404));
@@ -40,7 +40,7 @@ exports.getSeatsAvailability = async (req, res, next) => {
   });
 };
 
-// ── @route   PUT /api/transport/stations/:id/routes (owner only) ──────────────
+
 exports.updateRoutes = async (req, res, next) => {
   const station = await Place.findById(req.params.id);
   if (!station || station.type !== 'station') return next(new AppError('Station not found', 404));
