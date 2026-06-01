@@ -1,14 +1,14 @@
 const fetch = require('node-fetch');
 const AppError = require('../utils/AppError');
 
-// ── @route   GET /api/weather ─────────────────────────────────────────────────
-// Fetches weather from OpenWeatherMap — called from backend to keep API key safe
+
+
 exports.getWeather = async (req, res, next) => {
   const city = req.query.city || process.env.WEATHER_CITY || 'Cairo';
   const apiKey = process.env.WEATHER_API_KEY;
 
   if (!apiKey || apiKey === 'your_openweathermap_api_key_here') {
-    // Return mock data if no API key is configured
+    
     return res.json({
       success: true,
       data: {
