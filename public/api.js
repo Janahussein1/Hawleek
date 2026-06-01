@@ -1,8 +1,8 @@
-// ── api.js — shared across ALL frontend pages ────────────────────────────────
+
 // Change this to your deployed backend URL when you deploy
 const API_BASE = 'http://localhost:5000/api';
 
-// ── Token helpers ─────────────────────────────────────────────────────────────
+
 const getToken = () => localStorage.getItem('hawleek_token');
 const getUser  = () => JSON.parse(localStorage.getItem('hawleek_user') || 'null');
 const setAuth  = (token, user) => {
@@ -14,7 +14,6 @@ const clearAuth = () => {
   localStorage.removeItem('hawleek_user');
 };
 
-// ── Core fetch wrapper ────────────────────────────────────────────────────────
 async function apiRequest(method, endpoint, body = null, isFormData = false) {
   const headers = {};
   const token = getToken();
@@ -33,7 +32,6 @@ async function apiRequest(method, endpoint, body = null, isFormData = false) {
   return data;
 }
 
-// ── API methods ───────────────────────────────────────────────────────────────
 const API = {
   get:    (url)               => apiRequest('GET',    url),
   post:   (url, body)         => apiRequest('POST',   url, body),
@@ -43,9 +41,9 @@ const API = {
   upload: (url, formData, method = 'POST') => apiRequest(method, url, formData, true),
 };
 
-// ── Toast notification ────────────────────────────────────────────────────────
+
 function showToast(message, type = 'success') {
-  // Remove existing toast
+
   const old = document.getElementById('hawleek-toast');
   if (old) old.remove();
 
@@ -66,7 +64,6 @@ function showToast(message, type = 'success') {
   setTimeout(() => toast.remove(), 4000);
 }
 
-// ── Spinner helpers ───────────────────────────────────────────────────────────
 function showSpinner(btn) {
   if (!btn) return;
   btn._originalText = btn.textContent;
@@ -80,14 +77,12 @@ function hideSpinner(btn) {
   btn.textContent = btn._originalText || 'Submit';
 }
 
-// ── Auth guard: redirect to login if not authenticated ────────────────────────
+
 function requireAuth() {
   if (!getToken()) {
     window.location.href = '/Homepage /login.html';
   }
 }
-
-// ── Role guard ────────────────────────────────────────────────────────────────
 function requireRole(...roles) {
   const user = getUser();
   if (!user || !roles.includes(user.role)) {
@@ -96,7 +91,6 @@ function requireRole(...roles) {
   }
 }
 
-// ── Update nav based on login state ──────────────────────────────────────────
 function updateNav() {
   const user = getUser();
   const loginLinks  = document.querySelectorAll('[data-show="guest"]');
@@ -117,14 +111,12 @@ function updateNav() {
   }
 }
 
-// ── Logout ────────────────────────────────────────────────────────────────────
 function logout() {
   clearAuth();
   showToast('Logged out successfully');
   setTimeout(() => (window.location.href = '/Homepage /index.html'), 1000);
 }
 
-// ── Pagination renderer ───────────────────────────────────────────────────────
 function renderPagination(containerId, pagination, onPageChange) {
   const container = document.getElementById(containerId);
   if (!container || pagination.totalPages <= 1) {
@@ -144,5 +136,5 @@ function renderPagination(containerId, pagination, onPageChange) {
   container.innerHTML = html;
 }
 
-// Initialize nav on every page
+
 document.addEventListener('DOMContentLoaded', updateNav);
