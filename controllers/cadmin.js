@@ -4,7 +4,7 @@ const Booking = require('../models/Booking');
 const Review = require('../models/Review');
 const AppError = require('../utils/AppError');
 
-// ── @route   GET /api/admin/dashboard ────────────────────────────────────────
+
 exports.getDashboard = async (req, res) => {
   const [totalUsers, totalPlaces, totalBookings, totalReviews,
     pendingPlaces, pendingBookings] = await Promise.all([
@@ -16,7 +16,7 @@ exports.getDashboard = async (req, res) => {
     Booking.countDocuments({ status: 'pending' }),
   ]);
 
-  // Recent activity
+
   const recentBookings = await Booking.find()
     .populate('user', 'name email')
     .populate('place', 'name type')
@@ -37,7 +37,7 @@ exports.getDashboard = async (req, res) => {
   });
 };
 
-// ── @route   GET /api/admin/users ─────────────────────────────────────────────
+
 exports.getAllUsers = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 20;
@@ -61,7 +61,7 @@ exports.getAllUsers = async (req, res) => {
   });
 };
 
-// ── @route   PUT /api/admin/users/:id/role ────────────────────────────────────
+
 exports.updateUserRole = async (req, res, next) => {
   const { role } = req.body;
   const allowed = ['resident', 'business_owner', 'admin'];
@@ -73,7 +73,6 @@ exports.updateUserRole = async (req, res, next) => {
   res.json({ success: true, data: user, message: `User role updated to ${role}` });
 };
 
-// ── @route   PUT /api/admin/users/:id/toggle ──────────────────────────────────
 exports.toggleUserStatus = async (req, res, next) => {
   const user = await User.findById(req.params.id);
   if (!user) return next(new AppError('User not found', 404));
@@ -88,7 +87,6 @@ exports.toggleUserStatus = async (req, res, next) => {
   });
 };
 
-// ── @route   GET /api/admin/places ────────────────────────────────────────────
 exports.getAllPlaces = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 20;
@@ -114,7 +112,6 @@ exports.getAllPlaces = async (req, res) => {
   });
 };
 
-// ── @route   PUT /api/admin/places/:id/verify ─────────────────────────────────
 exports.verifyPlace = async (req, res, next) => {
   const place = await Place.findByIdAndUpdate(
     req.params.id,
@@ -126,14 +123,14 @@ exports.verifyPlace = async (req, res, next) => {
   res.json({ success: true, data: place, message: 'Place verified successfully' });
 };
 
-// ── @route   DELETE /api/admin/places/:id ────────────────────────────────────
+
 exports.adminDeletePlace = async (req, res, next) => {
   const place = await Place.findByIdAndUpdate(req.params.id, { isActive: false }, { new: true });
   if (!place) return next(new AppError('Place not found', 404));
   res.json({ success: true, message: 'Place removed by admin' });
 };
 
-// ── @route   GET /api/admin/bookings ──────────────────────────────────────────
+
 exports.getAllBookings = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 20;
@@ -158,7 +155,6 @@ exports.getAllBookings = async (req, res) => {
   });
 };
 
-// ── @route   DELETE /api/admin/reviews/:id ───────────────────────────────────
 exports.deleteReview = async (req, res, next) => {
   const review = await Review.findById(req.params.id);
   if (!review) return next(new AppError('Review not found', 404));
