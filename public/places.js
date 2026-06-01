@@ -1,4 +1,4 @@
-// ── places.js — neighborhood places discovery ─────────────────────────────────
+
 // Include api.js BEFORE this file in your HTML
 
 let currentPage = 1;
@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
   loadPlaces();
   loadWeather();
 
-  // ── Search form ─────────────────────────────────────────────────────────────
   const searchForm = document.getElementById('search-form');
   if (searchForm) {
     searchForm.addEventListener('submit', (e) => {
@@ -22,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ── Sort change ─────────────────────────────────────────────────────────────
   const sortSelect = document.getElementById('sort-select');
   if (sortSelect) {
     sortSelect.addEventListener('change', () => {
@@ -33,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// ── Load places from API ──────────────────────────────────────────────────────
 async function loadPlaces(page = 1) {
   currentPage = page;
   const container = document.getElementById('places-container');
@@ -48,7 +45,7 @@ async function loadPlaces(page = 1) {
     ...currentFilters,
   });
 
-  // Remove empty params
+
   for (const [k, v] of params.entries()) {
     if (!v) params.delete(k);
   }
@@ -76,7 +73,6 @@ async function loadPlaces(page = 1) {
   }
 }
 
-// ── Render a single place card ────────────────────────────────────────────────
 function renderPlaceCard(place) {
   const stars = '★'.repeat(Math.round(place.averageRating)) + '☆'.repeat(5 - Math.round(place.averageRating));
   const verified = place.isVerified ? '<span style="color:#22c55e;font-size:12px">✓ Verified</span>' : '';
@@ -113,7 +109,7 @@ function renderPlaceCard(place) {
     </div>`;
 }
 
-// ── Load neighborhoods for filter dropdown ────────────────────────────────────
+
 async function loadNeighborhoods() {
   const select = document.getElementById('neighborhood-filter');
   if (!select) return;
@@ -131,7 +127,6 @@ async function loadNeighborhoods() {
   }
 }
 
-// ── Load weather widget ───────────────────────────────────────────────────────
 async function loadWeather() {
   const weatherEl = document.getElementById('weather-widget');
   if (!weatherEl) return;
@@ -156,7 +151,6 @@ async function loadWeather() {
   }
 }
 
-// ── Place detail page ─────────────────────────────────────────────────────────
 async function loadPlaceDetail() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
@@ -211,7 +205,7 @@ async function loadPlaceDetail() {
   }
 }
 
-// ── Render transport routes ───────────────────────────────────────────────────
+
 function renderRoutes(routes, placeId) {
   if (!routes || routes.length === 0) return '';
   return `
@@ -239,7 +233,7 @@ function renderRoutes(routes, placeId) {
     <div id="seat-booking-form" style="display:none;margin-top:20px;padding:20px;border:1px solid #0f6e56;border-radius:12px"></div>`;
 }
 
-// ── Render table/appointment booking form ─────────────────────────────────────
+
 function renderBookingForm(place) {
   const type = place.type === 'clinic' ? 'appointment' : 'table';
   return `
@@ -265,7 +259,6 @@ function renderBookingForm(place) {
     </form>`;
 }
 
-// ── Setup booking form submission ─────────────────────────────────────────────
 function setupBookingForm(place, placeId) {
   const form = document.getElementById('booking-form');
   if (!form) return;
@@ -300,7 +293,7 @@ function setupBookingForm(place, placeId) {
   });
 }
 
-// ── Transport: open seat booking panel ───────────────────────────────────────
+
 function openSeatBooking(routeIndex, destination, price, available, placeId) {
   const panel = document.getElementById('seat-booking-form');
   if (!panel) return;
@@ -329,7 +322,7 @@ function openSeatBooking(routeIndex, destination, price, available, placeId) {
   });
 }
 
-function setupSeatBooking() {} // placeholder — uses openSeatBooking above
+function setupSeatBooking() {} 
 
 async function confirmSeatBooking(placeId, routeIndex, price) {
   if (!getToken()) { window.location.href = '/Homepage /login.html'; return; }
@@ -353,7 +346,7 @@ async function confirmSeatBooking(placeId, routeIndex, price) {
     });
     showToast(`${seats} seat(s) booked successfully! 🚌`);
     document.getElementById('seat-booking-form').style.display = 'none';
-    loadPlaceDetail(); // refresh to show updated seats
+    loadPlaceDetail(); 
   } catch (err) {
     showToast(err.message, 'error');
   } finally {
@@ -361,7 +354,6 @@ async function confirmSeatBooking(placeId, routeIndex, price) {
   }
 }
 
-// ── Reviews ───────────────────────────────────────────────────────────────────
 function renderReview(r) {
   const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
   return `
@@ -410,7 +402,7 @@ function setupReviewForm(placeId) {
       await API.post(`/reviews/place/${placeId}`, { rating: parseInt(rating), comment });
       showToast('Review submitted! ⭐');
       form.reset();
-      // Reload reviews
+     
       const rl = document.getElementById('reviews-list');
       if (rl) {
         const data = await API.get(`/reviews/place/${placeId}`);
@@ -424,7 +416,7 @@ function setupReviewForm(placeId) {
   });
 }
 
-// Auto-load detail page if on the detail page
+
 document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('place-detail')) {
     loadPlaceDetail();
