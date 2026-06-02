@@ -82,6 +82,48 @@ const seed = async () => {
       cuisine: 'Egyptian',
     });
 
+    const riverBistro = await Place.create({
+      name: 'Nile View Restaurant',
+      type: 'restaurant',
+      description: 'Scenic dining on the Nile with a menu full of grilled specialties and fresh seafood.',
+      neighborhood: 'Maadi',
+      address: '7 Nile Corniche, Maadi, Cairo',
+      phone: '+20221001234',
+      openingHours: '12:00 PM - 12:00 AM',
+      owner: ownerUser._id,
+      isVerified: true,
+      location: { lat: 29.9635, lng: 31.2499 },
+      cuisine: 'Grill & Seafood',
+    });
+
+    const riverBistro2 = await Place.create({
+      name: 'Zamalek River Bistro',
+      type: 'restaurant',
+      description: 'Charming riverside restaurant serving modern Mediterranean dishes and signature cocktails.',
+      neighborhood: 'Zamalek',
+      address: '12 Mohamed Mazhar St, Zamalek, Cairo',
+      phone: '+20222391234',
+      openingHours: '10:00 AM - 1:00 AM',
+      owner: ownerUser2._id,
+      isVerified: true,
+      location: { lat: 30.0637, lng: 31.2212 },
+      cuisine: 'Mediterranean',
+    });
+
+    const downtownSeafood = await Place.create({
+      name: 'Downtown Seafood Grill',
+      type: 'restaurant',
+      description: 'A popular seafood destination with fresh catches and classic Egyptian hospitality.',
+      neighborhood: 'Maadi',
+      address: '18 Road 218, Maadi, Cairo',
+      phone: '+20229987654',
+      openingHours: '11:00 AM - 11:00 PM',
+      owner: ownerUser._id,
+      isVerified: true,
+      location: { lat: 29.9612, lng: 31.2505 },
+      cuisine: 'Seafood',
+    });
+
     const cafe = await Place.create({
       name: 'Cilantro Cafe Maadi',
       type: 'cafe',
@@ -195,7 +237,7 @@ const seed = async () => {
       location: { lat: 30.0870, lng: 31.3240 },
     });
 
-    console.log('📍 Places created (9)');
+    console.log('📍 Places created (12)');
 
     const tomorrow  = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
     const nextWeek  = new Date(); nextWeek.setDate(nextWeek.getDate() + 7);

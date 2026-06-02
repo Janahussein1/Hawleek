@@ -19,8 +19,6 @@ i18n.configure({
   cookie: 'lang',
 });
 
-connectDB();
-
 const app = express();
 app.set('trust proxy', 1);
 
@@ -133,8 +131,18 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   await connectDB();
-  app.listen(PORT, () => {
+
+  const server = app.listen(PORT, () => {
     console.log(`✅ Hawleek server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
+  });
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`❌ Port ${PORT} is already in use. Please stop the process using this port or change PORT in your .env file.`);
+      process.exit(1);
+    }
+    console.error('❌ Server error:', err);
+    process.exit(1);
   });
 };
 
