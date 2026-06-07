@@ -1,0 +1,223 @@
+/* 
+   ==========================================================================
+   Hawleek Service Request Page Stylesheet
+   ========================================================================== */
+
+.page-shell {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.page-header {
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.eyebrow {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.page-header h1 {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+  color: var(--secondary);
+}
+
+.page-intro {
+  max-width: 720px;
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+/* Service Cards Grid */
+.service-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.service-info-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+}
+
+.service-info-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-border);
+}
+
+.service-card-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.service-info-card h3 {
+  padding: 20px 24px 8px;
+  font-size: 1.2rem;
+  color: var(--secondary);
+}
+
+.service-info-card p {
+  padding: 0 24px 24px;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+/* Request Form Card */
+.request-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  box-shadow: var(--shadow-lg);
+}
+
+.request-header {
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 24px;
+}
+
+.request-header h2 {
+  font-size: 1.8rem;
+  color: var(--secondary);
+  margin-top: 4px;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-top: 6px;
+}
+
+/* Form Styles */
+#service-request-form label {
+  display: block;
+  font-weight: 600;
+  color: var(--secondary);
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+#service-request-form input,
+#service-request-form select,
+#service-request-form textarea {
+  width: 100%;
+  padding: 12px 16px;
+  margin-top: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  outline: none;
+  background-color: var(--secondary-light);
+  color: var(--text-main);
+  transition: var(--transition);
+}
+
+#service-request-form input:focus,
+#service-request-form select:focus,
+#service-request-form textarea:focus {
+  border-color: var(--primary);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(15, 110, 86, 0.1);
+}
+
+/* Radio Button Bar (Type Bar) */
+.type-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.type-bar input[type="radio"] {
+  display: none;
+}
+
+.type-bar label {
+  padding: 10px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--secondary-light);
+  color: var(--text-main);
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+  flex-grow: 1;
+  margin-bottom: 0 !important;
+}
+
+.type-bar input[type="radio"]:checked + label {
+  background-color: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 4px 10px rgba(15, 110, 86, 0.2);
+}
+
+.type-bar label:hover {
+  background-color: var(--primary-light);
+  border-color: var(--primary-border);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.form-actions button {
+  padding: 14px 28px;
+  font-size: 0.95rem;
+}
+
+.help-text {
+  margin-top: 24px;
+  color: var(--success);
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .request-card {
+    padding: 24px;
+  }
+}

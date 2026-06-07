@@ -1,5 +1,6 @@
-require('dotenv').config();
+require('dotenv').config({ override: true });
 require('express-async-errors');
+
 
 const express    = require('express');
 const cors       = require('cors');
@@ -26,7 +27,6 @@ app.set('view engine', 'ejs');
 app.set('views', [path.join(__dirname, 'main'), path.join(__dirname, 'views')]); // Ensure this path matches your folder structure
 app.use('/css', express.static(path.join(__dirname, 'css')));
 app.use('/js', express.static(path.join(__dirname, 'js')));
-app.use('/dashboard', express.static(path.join(__dirname, 'dashboard')));
 app.use('/photos', express.static(path.join(__dirname, 'photos')));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
@@ -86,6 +86,8 @@ app.get('/dashboard/login.ejs', (req, res) => {
 
 // Public page routes (render views/pages/*.ejs)
 app.get('/services', (req, res) => res.render('pages/services'));
+app.get('/services/request', (req, res) => res.render('pages/serviceRequest'));
+app.get('/service-request', (req, res) => res.render('pages/serviceRequest'));
 app.get('/booking',  (req, res) => res.render('pages/booking'));
 app.get('/clinics',  (req, res) => res.render('pages/clinicBooking'));
 app.get('/transport',(req, res) => res.render('pages/transport'));
@@ -94,6 +96,7 @@ app.get('/toilets',  (req, res) => res.render('pages/toilets'));
 
 // Also allow direct .ejs-style links (so `/pages/services.ejs` works)
 app.get('/pages/services.ejs', (req, res) => res.render('pages/services'));
+app.get('/pages/serviceRequest.ejs', (req, res) => res.render('pages/serviceRequest'));
 app.get('/pages/booking.ejs',  (req, res) => res.render('pages/booking'));
 app.get('/pages/clinics.ejs',  (req, res) => res.render('pages/clinicBooking'));
 app.get('/pages/transport.ejs',(req, res) => res.render('pages/transport'));
@@ -130,6 +133,7 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
+  console.log('DEBUG: using MONGO_URI =', process.env.MONGO_URI);
   await connectDB();
 
   const server = app.listen(PORT, () => {
