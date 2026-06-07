@@ -2,7 +2,7 @@ const Booking = require('../models/Booking');
 const Place = require('../models/Place');
 const User = require('../models/User');
 const AppError = require('../utils/AppError');
-const { sendBookingConfirmation } = require('../utils/email');
+const { sendBookingConfirmation, sendBookingStatusUpdate } = require('../utils/email');
 const crypto = require('crypto');
 
 // ── @route   POST /api/bookings ───────────────────────────────────────────────
@@ -54,23 +54,14 @@ exports.createBooking = async (req, res, next) => {
 
   res.status(201).json({ success: true, data: booking, message: 'Booking created successfully' });
 
-  const recipientEmail = contactEmail?.trim() || req.user.email;
+  const recipientEmail = (contactEmail?.trim() || req.user.email).toLowerCase();
   const placeName = place.name || 'Restaurant';
   sendBookingConfirmation({
-    userEmail: req.user.email,
+    userEmail: recipientEmail,
     userName: req.user.name,
     booking,
     placeName,
-  }).catch(err => console.error('Booking confirmation email failed:', err));
-
-  if (recipientEmail && recipientEmail !== req.user.email) {
-    sendBookingConfirmation({
-      userEmail: recipientEmail,
-      userName: req.user.name,
-      booking,
-      placeName,
-    }).catch(err => console.error('Booking confirmation email failed:', err));
-  }
+  }).catch(err => console.error('Booking confirmation email failed:', err.message));
 };
 
 // Guest booking endpoint: creates or reuses a user by email, then creates a booking
@@ -132,9 +123,10 @@ exports.createGuestBooking = async (req, res, next) => {
 
   res.status(201).json({ success: true, data: booking, message: 'Guest booking created successfully' });
 
-  const recipientEmail = contactEmail.trim();
+  const recipientEmail = contactEmail.trim().toLowerCase();
   const placeName = place.name || 'Restaurant';
-  sendBookingConfirmation({ userEmail: recipientEmail, userName: name || user.name, booking, placeName }).catch(err => console.error('Booking confirmation email failed:', err));
+  sendBookingConfirmation({ userEmail: recipientEmail, userName: name || user.name, booking, placeName })
+    .catch(err => console.error('Booking confirmation email failed:', err.message));
 };
 
 // ── @route   GET /api/bookings/:id ───────────────────────────────────────────
@@ -159,10 +151,10 @@ exports.getBooking = async (req, res, next) => {
 
 // ── @route   PUT /api/bookings/:id/cancel ────────────────────────────────────
 exports.cancelBooking = async (req, res, next) => {
-  const booking = await Booking.findById(req.params.id);
+  const booking = await Booking.findById(req.params.id).populate('place').populate('user');
   if (!booking) return next(new AppError('Booking not found', 404));
 
-  if (booking.user.toString() !== req.user.id && req.user.role !== 'admin') {
+  if (booking.user?.toString() !== req.user.id && req.user.role !== 'admin') {
     return next(new AppError('Not authorized', 403));
   }
 
@@ -176,7 +168,7 @@ exports.cancelBooking = async (req, res, next) => {
 
   // Restore seats if transport booking
   if (booking.type === 'seat' && booking.routeIndex !== null) {
-    await Place.findByIdAndUpdate(booking.place, {
+    await Place.findByIdAndUpdate(booking.place?._id || booking.place, {
       $inc: { [`routes.${booking.routeIndex}.availableSeats`]: booking.seatsBooked },
     });
   }
@@ -185,6 +177,18 @@ exports.cancelBooking = async (req, res, next) => {
   await booking.save();
 
   res.json({ success: true, data: booking, message: 'Booking cancelled successfully' });
+
+  // Send status update notification email (non-blocking)
+  const recipientEmail = booking.contactEmail || booking.user?.email;
+  if (recipientEmail) {
+    sendBookingStatusUpdate({
+      userEmail: recipientEmail,
+      userName: booking.user?.name || 'Guest',
+      booking,
+      placeName: booking.place?.name || 'Restaurant',
+      newStatus: 'cancelled',
+    }).catch(err => console.error('Booking cancellation email failed:', err.message));
+  }
 };
 
 // ── @route   PUT /api/bookings/:id/status (business owner / admin) ────────────
@@ -193,7 +197,7 @@ exports.updateBookingStatus = async (req, res, next) => {
   const allowed = ['pending', 'confirmed', 'completed', 'cancelled'];
   if (!allowed.includes(status)) return next(new AppError('Invalid status value', 400));
 
-  const booking = await Booking.findById(req.params.id).populate('place');
+  const booking = await Booking.findById(req.params.id).populate('place').populate('user');
   if (!booking) return next(new AppError('Booking not found', 404));
 
   const isPlaceOwner = booking.place?.owner?.toString() === req.user.id;
@@ -205,6 +209,18 @@ exports.updateBookingStatus = async (req, res, next) => {
   await booking.save();
 
   res.json({ success: true, data: booking, message: `Booking marked as ${status}` });
+
+  // Send status update notification email (non-blocking)
+  const recipientEmail = booking.contactEmail || booking.user?.email;
+  if (recipientEmail) {
+    sendBookingStatusUpdate({
+      userEmail: recipientEmail,
+      userName: booking.user?.name || 'Guest',
+      booking,
+      placeName: booking.place?.name || 'Restaurant',
+      newStatus: status,
+    }).catch(err => console.error('Booking status update email failed:', err.message));
+  }
 };
 
 // ── @route   GET /api/bookings/place/:placeId (business owner) ───────────────

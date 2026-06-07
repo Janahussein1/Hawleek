@@ -1,245 +1,115 @@
-/*
-  1. Navbar 
-   */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 10%;
-    background: White;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    animation: fadeIn 1s ease-in;
-}
-
-.logo {
-    font-size: 26px;
-    font-weight: bold;
-    color: RoyalBlue;
-}
-
-.navbar ul {
-    display: flex;
-    list-style: none;
-}
-
-.navbar ul li {
-    margin-left: 25px;
-}
-
-.navbar ul li a {
-    text-decoration: none;
-    color: DimGray;
-    font-weight: 500;
-    transition: 0.3s;
-    position: relative;
-}
-
-/* Underline Effect by using hover */
-.navbar ul li a::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -5px;
-    left: 0;
-    background-color: RoyalBlue;
-    transition: 0.3s;
-}
-
-.navbar ul li a:hover::after {
-    width: 100%;
-}
-
-.navbar ul li a:hover {
-    color: RoyalBlue;
-}
 
 .booking-container {
-    padding: 60px 10%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: calc(100vh - 200px);
-    animation: fadeIn 1s ease-in;
+  padding: 60px 4%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+  animation: fadeIn 0.8s ease;
 }
 
 .form-wrapper {
-    background: White;
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    width: 100%;
-    max-width: 600px;
+  background: var(--bg-card);
+  padding: 40px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 650px;
 }
 
 .form-wrapper h1 {
-    color: RoyalBlue;
-    text-align: center;
-    margin-bottom: 10px;
+  color: var(--secondary);
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 8px;
 }
 
 .form-wrapper > p {
-    text-align: center;
-    color: DimGray;
-    margin-bottom: 30px;
+  text-align: center;
+  color: var(--text-muted);
+  margin-bottom: 30px;
+  font-size: 0.95rem;
 }
 
 fieldset {
-    border: none;
-    margin-bottom: 25px;
-    padding: 0;
+  border: none;
+  margin-bottom: 24px;
+  padding: 0;
 }
 
 legend {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: DarkSlateGray;
-    margin-bottom: 15px;
-    border-bottom: 2px solid #eee;
-    width: 100%;
-    padding-bottom: 8px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--secondary);
+  margin-bottom: 16px;
+  border-bottom: 2px solid var(--primary-light);
+  width: 100%;
+  padding-bottom: 8px;
 }
 
 label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: #444;
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--text-main);
+  font-size: 0.9rem;
 }
 
 input[type="text"],
 input[type="tel"],
 input[type="date"],
 input[type="number"],
-select {
-    width: 100%;
-    padding: 12px 15px;
-    margin-bottom: 20px;
-    border: 2px solid LightGray;
-    border-radius: 10px;
-    font-size: 1rem;
-    outline: none;
-    transition: 0.3s ease;
-    background-color: #FAFAFA;
+input[type="time"],
+select,
+textarea {
+  width: 100%;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  outline: none;
+  background-color: var(--secondary-light);
+  color: var(--text-main);
+  transition: var(--transition);
 }
 
 input:focus, 
-select:focus {
-    border-color: RoyalBlue;
-    background-color: White;
-    box-shadow: 0 0 8px rgba(65, 105, 225, 0.2);
+select:focus,
+textarea:focus {
+  border-color: var(--primary);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(15, 110, 86, 0.1);
 }
 
 .submit-btn {
-    width: 100%;
-    padding: 15px;
-    background-color: OrangeRed;
-    color: White;
-    border: none;
-    border-radius: 10px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.4s;
-    box-shadow: 0 4px 15px rgba(255, 69, 0, 0.3);
-    margin-top: 10px;
+  width: 100%;
+  padding: 14px;
+  background-color: var(--primary);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 12px rgba(15, 110, 86, 0.15);
+  margin-top: 10px;
 }
 
 .submit-btn:hover {
-    background-color: DarkOrange;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(255, 69, 0, 0.5);
-}
-
-/* 
-   6. Footer & Utilities
-   */
-.hidden-label {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    border: 0;
-}
-
-footer {
-    background: #222;
-    color: WhiteSmoke;
-    padding: 50px 10%;
-    text-align: center;
-    margin-top: 80px;
-}
-
-.footer-links {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 15px;
-}
-
-.footer-links a {
-    color: LightGray;
-    text-decoration: none;
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(15, 110, 86, 0.25);
 }
 
 @media (max-width: 768px) {
-    .navbar {
-        flex-wrap: wrap;
-        padding: 16px 6%;
-    }
+  .booking-container {
+    padding: 30px 4%;
+  }
 
-    .navbar ul {
-        flex-wrap: wrap;
-        justify-content: center;
-        margin-top: 10px;
-    }
-
-    .navbar ul li {
-        margin-left: 12px;
-        margin-bottom: 8px;
-    }
-
-    .booking-container {
-        padding: 40px 6%;
-        min-height: auto;
-    }
-
-    .form-wrapper {
-        padding: 30px;
-        border-radius: 16px;
-    }
-
-    input[type="text"],
-    input[type="tel"],
-    input[type="date"],
-    input[type="number"],
-    select {
-        font-size: 0.95rem;
-    }
-
-    .submit-btn {
-        padding: 14px;
-    }
-
-    footer {
-        padding: 35px 6%;
-    }
-
-    .footer-links {
-        flex-direction: column;
-        gap: 12px;
-    }
+  .form-wrapper {
+    padding: 24px;
+  }
 }
-
-

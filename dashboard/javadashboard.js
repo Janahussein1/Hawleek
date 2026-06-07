@@ -1,13 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
-// 1. SELECT ELEMENTS
-const tableBody = document.getElementById('reservation-table-body');
-const statTotal = document.getElementById('stat-total');
-const statPending = document.getElementById('stat-pending');
-const statCancelled = document.getElementById('stat-cancelled');
-const addForm = document.getElementById('addReservationForm');
+  requireAuth();
 
-// 2. DATA INITIALIZATION (Persistence)
-let reservations = JSON.parse(localStorage.getItem('restaurant_data')) || [];
+  // 1. SELECT ELEMENTS
+  const tableBody = document.getElementById('reservation-table-body');
+  const statTotal = document.getElementById('stat-total');
+  const statPending = document.getElementById('stat-pending');
+  const statCancelled = document.getElementById('stat-cancelled');
+  const addForm = document.getElementById('addReservationForm');
+
+  // 2. DATA INITIALIZATION
+  let reservations = [];
 
 // 3. TOAST NOTIFICATION FUNCTION
 function showToast(message, type = 'success') {
@@ -29,14 +31,13 @@ setTimeout(() => toast.remove(), 500);
 
 // 4. CORE FUNCTIONS
 function updateStats() {
-statTotal.innerText = reservations.length;
-statPending.innerText = reservations.filter(r => r.status === 'Pending').length;
-statCancelled.innerText = reservations.filter(r => r.status === 'Cancelled').length;
+  statTotal.innerText = reservations.length;
+  statPending.innerText = reservations.filter(r => (r.status || '').toLowerCase() === 'pending').length;
+  statCancelled.innerText = reservations.filter(r => (r.status || '').toLowerCase() === 'cancelled').length;
 }
 
 function saveData() {
-localStorage.setItem('restaurant_data', JSON.stringify(reservations));
-updateStats();
+  updateStats();
 }
 
 function renderTable() {
@@ -47,14 +48,17 @@ const row = document.createElement('tr');
 row.className = 'res-row';
 row.setAttribute('data-status', res.status);
 
-// Dynamic color for status text
-const statusColor = res.status === 'Confirmed' ? '#27ae60' : (res.status === 'Cancelled' ? '#e74c3c' : '#f39c12');
+const customerName = res.place?.name || res.name || 'Unknown';
+const guests = res.partySize || res.guests || 1;
+const dateTime = res.date ? new Date(res.date).toLocaleString() : (res.dateTime ? res.dateTime.replace('T', ' ') : res.time || 'N/A');
+const statusText = res.status ? `${res.status.charAt(0).toUpperCase()}${res.status.slice(1)}` : 'Pending';
+const statusColor = statusText === 'Confirmed' ? '#27ae60' : (statusText === 'Cancelled' ? '#e74c3c' : '#f39c12');
 
 row.innerHTML = `
-<td>${res.name}</td>
-<td>${res.guests}</td>
-<td>${res.dateTime.replace('T', ' ')}</td>
-<td style="color: ${statusColor}; font-weight: bold;">${res.status}</td>
+<td>${customerName}</td>
+<td>${guests}</td>
+<td>${dateTime}</td>
+<td style="color: ${statusColor}; font-weight: bold;">${statusText}</td>
 <td>
 <button class="btn-confirm" data-index="${index}">Confirm</button>
 <button class="btn-cancel" data-index="${index}">Cancel</button>
@@ -97,10 +101,10 @@ return;
 
 // Add to array
 reservations.push({
-name: name,
-guests: guests,
-dateTime: dateStr,
-status: 'Pending'
+  name: name,
+  guests: guests,
+  dateTime: dateStr,
+  status: 'pending'
 });
 
 saveData();
@@ -115,17 +119,27 @@ const index = e.target.dataset.index;
 if (index === undefined) return;
 
 if (e.target.classList.contains('btn-confirm')) {
-reservations[index].status = 'Confirmed';
-showToast("Booking Confirmed!");
+  reservations[index].status = 'confirmed';
+  showToast("Booking Confirmed!");
 } else if (e.target.classList.contains('btn-cancel')) {
-reservations[index].status = 'Cancelled';
-showToast("Booking Cancelled", "error");
+  reservations[index].status = 'cancelled';
+  showToast("Booking Cancelled", "error");
 }
 
 saveData();
 renderTable();
 });
 
+async function loadBookings() {
+  try {
+    const response = await API.get('/users/bookings?limit=100');
+    reservations = Array.isArray(response.data) ? response.data : [];
+    renderTable();
+  } catch (err) {
+    showToast(`Unable to load bookings: ${err.message}`, 'error');
+  }
+}
+
 // 6. INITIAL RUN
-renderTable();
+loadBookings();
 });
