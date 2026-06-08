@@ -4,6 +4,21 @@ const { sendEmail } = require('../utils/email');
 exports.sendContact = async (req, res, next) => {
   const { name, email, message } = req.body;
 
+  // ── Name Validation ──
+  // Trims whitespace and ensures the name isn't empty, then validates via regex
+  const trimmedName = name ? name.trim() : '';
+  
+  // This regex allows English/Latin letters, spaces, hyphens, and apostrophes
+  const nameRegex = /^[a-zA-Z\s'-]+$/;
+
+  if (!trimmedName) {
+    return next(new AppError('Please provide your name.', 400));
+  }
+
+  if (!nameRegex.test(trimmedName)) {
+    return next(new AppError('Name can only contain letters, spaces, hyphens, or apostrophes.', 400));
+  }
+
   const rawSiteEmail = process.env.CONTACT_EMAIL || process.env.EMAIL_USER || 'hawleekservice@gmail.com';
   const siteEmail = rawSiteEmail.match(/<([^>]+)>/)?.[1] || rawSiteEmail;
 
@@ -21,7 +36,6 @@ exports.sendContact = async (req, res, next) => {
         <table width="600" cellpadding="0" cellspacing="0"
           style="max-width:600px;width:100%;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
 
-          <!-- Header -->
           <tr>
             <td style="background:linear-gradient(135deg,${isServiceRequest ? '#d97706' : '#0f6e56'},${isServiceRequest ? '#f59e0b' : '#1a9b75'});padding:36px 40px;text-align:center;">
               <h1 style="margin:0;color:#fff;font-size:24px;font-weight:700;">
@@ -31,14 +45,13 @@ exports.sendContact = async (req, res, next) => {
             </td>
           </tr>
 
-          <!-- Body -->
           <tr>
             <td style="padding:32px 40px;">
               <table width="100%" cellpadding="0" cellspacing="0"
                 style="background:#f8fffe;border:2px solid #e0f5ee;border-radius:12px;">
                 <tr><td style="padding:24px;">
                   <p style="margin:0 0 6px;font-size:13px;color:#888;font-weight:600;">From</p>
-                  <p style="margin:0 0 16px;font-size:15px;color:#1a1a1a;font-weight:600;">${name} &lt;${email}&gt;</p>
+                  <p style="margin:0 0 16px;font-size:15px;color:#1a1a1a;font-weight:600;">${trimmedName} &lt;${email}&gt;</p>
                   <p style="margin:0 0 6px;font-size:13px;color:#888;font-weight:600;">Message</p>
                   <p style="margin:0;font-size:14px;color:#333;line-height:1.7;white-space:pre-line;">${message}</p>
                 </td></tr>
@@ -49,7 +62,6 @@ exports.sendContact = async (req, res, next) => {
             </td>
           </tr>
 
-          <!-- Footer -->
           <tr>
             <td style="background:#f8fffe;padding:20px 40px;text-align:center;border-top:1px solid #e0f5ee;">
               <p style="margin:0;font-size:12px;color:#bbb;">© ${new Date().getFullYear()} Hawleek · Neighborhood Guide</p>
@@ -76,7 +88,6 @@ exports.sendContact = async (req, res, next) => {
         <table width="600" cellpadding="0" cellspacing="0"
           style="max-width:600px;width:100%;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
 
-          <!-- Header -->
           <tr>
             <td style="background:linear-gradient(135deg,#0f6e56,#1a9b75);padding:40px;text-align:center;">
               <h1 style="margin:0;color:#fff;font-size:28px;font-weight:700;">🏘️ Hawleek</h1>
@@ -84,20 +95,18 @@ exports.sendContact = async (req, res, next) => {
             </td>
           </tr>
 
-          <!-- Body -->
           <tr>
             <td style="padding:36px 40px;">
               <h2 style="margin:0 0 12px;color:#1a1a1a;font-size:22px;">
                 ${isServiceRequest ? '🔧 Service Request Received!' : '📬 Message Received!'}
               </h2>
               <p style="margin:0 0 20px;color:#555;font-size:15px;line-height:1.6;">
-                Hi <strong>${name}</strong>,
+                Hi <strong>${trimmedName}</strong>,
                 ${isServiceRequest
                   ? 'thank you for submitting a service request through Hawleek. Our technician team has been notified and will contact you within <strong>24 hours</strong> to schedule your appointment.'
                   : 'thank you for reaching out to us. We have received your message and our team will get back to you shortly.'}
               </p>
 
-              <!-- What they sent -->
               <table width="100%" cellpadding="0" cellspacing="0"
                 style="background:#f8fffe;border:2px solid #e0f5ee;border-radius:12px;margin-bottom:20px;">
                 <tr><td style="padding:20px 24px;">
@@ -123,7 +132,6 @@ exports.sendContact = async (req, res, next) => {
             </td>
           </tr>
 
-          <!-- Footer -->
           <tr>
             <td style="background:#f8fffe;padding:24px 40px;text-align:center;border-top:1px solid #e0f5ee;">
               <p style="margin:0;font-size:12px;color:#bbb;">
@@ -140,7 +148,7 @@ exports.sendContact = async (req, res, next) => {
   try {
     await sendEmail({
       to: siteEmail,
-      subject: isServiceRequest ? `🔧 Service Request: ${name}` : `📬 Contact form: ${name}`,
+      subject: isServiceRequest ? `🔧 Service Request: ${trimmedName}` : `📬 Contact form: ${trimmedName}`,
       html: adminHtml,
       replyTo: email,
     });
