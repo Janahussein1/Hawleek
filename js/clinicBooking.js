@@ -12,14 +12,14 @@ async function loadClinics() {
   const container = document.getElementById('clinic-list');
   if (!container) return;
 
-  container.innerHTML = '<p class="loading-message">Loading clinics &hellip;</p>';
+  container.innerHTML = '<p class="loading-message">' + t('clinic_loading', 'Loading clinics &hellip;') + '</p>';
 
   try {
     const data = await API.get('/places?type=clinic&limit=50');
     const clinics = Array.isArray(data.data) ? data.data : [];
 
     if (clinics.length === 0) {
-      container.innerHTML = '<p class="notice">No clinics are available at this time. Please check back later.</p>';
+      container.innerHTML = '<p class="notice">' + t('clinic_no_clinics', 'No clinics are available at this time. Please check back later.') + '</p>';
       return;
     }
 
@@ -27,10 +27,10 @@ async function loadClinics() {
     container.innerHTML = clinics.map((place) => {
       clinicMap[place._id] = place;
       const image = place.coverImage || '/photos/generalclinic.jpg';
-      const spec = place.specialization || 'General Medicine';
-      const hours = place.openingHours || 'Hours not listed';
-      const shortDesc = place.description || 'Book an appointment with our qualified medical professionals.';
-      const rating = place.averageRating ? `⭐ ${place.averageRating.toFixed(1)}` : 'New';
+      const spec = place.specialization || t('clinic_general_medicine', 'General Medicine');
+      const hours = place.openingHours || t('clinic_no_hours', 'Hours not listed');
+      const shortDesc = place.description || t('clinic_default_desc', 'Book an appointment with our qualified medical professionals.');
+      const rating = place.averageRating ? `⭐ ${place.averageRating.toFixed(1)}` : t('clinic_new', 'New');
 
       return `
         <article class="clinic-card">
@@ -44,17 +44,25 @@ async function loadClinics() {
             </div>
             <p>${escapeHtml(shortDesc)}</p>
             <div class="clinic-meta">
-              <span>📍 ${escapeHtml(place.address || place.neighborhood || 'Nearby location')}</span>
+              <span>📍 ${escapeHtml(place.address || place.neighborhood || t('clinic_nearby', 'Nearby location'))}</span>
               <span>🏥 ${escapeHtml(spec)}</span>
               <span>🕐 ${escapeHtml(hours)}</span>
-              <span>📞 ${escapeHtml(place.phone || 'Contact clinic')}</span>
+              <span>📞 ${escapeHtml(place.phone || t('clinic_contact', 'Contact clinic'))}</span>
             </div>
-            <button class="appointment-btn" type="button" data-id="${place._id}">Book Appointment →</button>
+            <button class="appointment-btn" type="button" data-id="${place._id}">${t('clinic_book_btn', 'Book Appointment →')}</button>
           </div>
         </article>`;
     }).join('');
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const placeId = urlParams.get('placeId');
+    if (placeId && clinicMap[placeId]) {
+      setTimeout(() => {
+        openAppointmentForm(clinicMap[placeId]);
+      }, 100);
+    }
   } catch (err) {
-    container.innerHTML = `<p class="error-message">Could not load clinics. ${escapeHtml(err.message)}</p>`;
+    container.innerHTML = `<p class="error-message">${t('clinic_load_error', 'Could not load clinics. ')} ${escapeHtml(err.message)}</p>`;
   }
 }
 
@@ -71,49 +79,49 @@ function openAppointmentForm(place) {
     <section class="appointment-card">
       <div class="appointment-header">
         <div>
-          <p class="eyebrow">🏥 Book an Appointment</p>
+          <p class="eyebrow">${t('clinic_form_eyebrow', '🏥 Book an Appointment')}</p>
           <h2>${escapeHtml(place.name)}</h2>
-          <p class="subtitle">${escapeHtml(place.specialization || 'Medical Services')} · ${escapeHtml(place.address)}</p>
+          <p class="subtitle">${escapeHtml(place.specialization || t('clinic_medical_services', 'Medical Services'))} · ${escapeHtml(place.address)}</p>
         </div>
         <button class="close-button" type="button" aria-label="Close appointment form">✕</button>
       </div>
       <form id="clinic-appointment-form">
         <div class="form-grid">
           <label>
-            Your Name *
-            <input type="text" id="appointment-name" required value="${escapeHtml(defaultName)}" placeholder="Enter your name">
+            ${t('clinic_form_name', 'Your Name *')}
+            <input type="text" id="appointment-name" required value="${escapeHtml(defaultName)}" placeholder="${t('clinic_form_name_placeholder', 'Enter your name')}">
           </label>
           <label>
-            Your Email *
+            ${t('clinic_form_email', 'Your Email *')}
             <input type="email" id="appointment-email" required value="${escapeHtml(defaultEmail)}" placeholder="your@email.com">
           </label>
           <label>
-            Date *
+            ${t('clinic_form_date', 'Date *')}
             <input type="date" id="appointment-date" required min="${new Date().toISOString().split('T')[0]}">
           </label>
           <label>
-            Preferred Time *
+            ${t('clinic_form_time', 'Preferred Time *')}
             <input type="time" id="appointment-time" required>
           </label>
           <label>
-            Phone Number *
+            ${t('clinic_form_phone', 'Phone Number *')}
             <input type="tel" id="appointment-phone" required placeholder="+20 1XX XXX XXXX">
           </label>
         </div>
         <label>
-          Reason for Visit *
-          <textarea id="appointment-reason" rows="4" required placeholder="Describe your symptoms or reason for visit..."></textarea>
+          ${t('clinic_form_reason', 'Reason for Visit *')}
+          <textarea id="appointment-reason" rows="4" required placeholder="${t('clinic_form_reason_placeholder', 'Describe your symptoms or reason for visit...')}"></textarea>
         </label>
         <label>
-          Additional Notes (optional)
-          <textarea id="appointment-notes" rows="3" placeholder="Any medical history or allergies we should know about..."></textarea>
+          ${t('clinic_form_notes', 'Additional Notes (optional)')}
+          <textarea id="appointment-notes" rows="3" placeholder="${t('clinic_form_notes_placeholder', 'Any medical history or allergies we should know about...')}"></textarea>
         </label>
         <div class="form-actions">
-          <button type="submit" class="primary-btn" id="submit-btn">Confirm Appointment</button>
-          <button type="button" class="secondary-btn" id="cancel-appointment">Cancel</button>
+          <button type="submit" class="primary-btn" id="submit-btn">${t('clinic_form_submit', 'Confirm Appointment')}</button>
+          <button type="button" class="secondary-btn" id="cancel-appointment">${t('clinic_form_cancel', 'Cancel')}</button>
         </div>
       </form>
-      <p class="help-text">✓ You will receive a confirmation email with the clinic name, date, and time</p>
+      <p class="help-text">${t('clinic_form_help', '✓ You will receive a confirmation email with the clinic name, date, and time')}</p>
     </section>`;
 
   panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -130,7 +138,7 @@ async function handleAppointmentSubmit(event) {
   event.preventDefault();
 
   if (!selectedClinic) {
-    showToast('Please select a clinic', 'error');
+    showToast(t('clinic_toast_select', 'Please select a clinic'), 'error');
     return;
   }
 
@@ -149,27 +157,27 @@ async function handleAppointmentSubmit(event) {
 
   // Validation
   if (!name) {
-    showToast('Please enter your name', 'error');
+    showToast(t('clinic_toast_name', 'Please enter your name'), 'error');
     return;
   }
 
   if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
-    showToast('Please enter a valid email address', 'error');
+    showToast(t('clinic_toast_email', 'Please enter a valid email address'), 'error');
     return;
   }
 
   if (!phone) {
-    showToast('Please enter your phone number', 'error');
+    showToast(t('clinic_toast_phone', 'Please enter your phone number'), 'error');
     return;
   }
 
   if (!date || !time) {
-    showToast('Please select a date and time', 'error');
+    showToast(t('clinic_toast_datetime', 'Please select a date and time'), 'error');
     return;
   }
 
   if (!reason) {
-    showToast('Please describe the reason for your visit', 'error');
+    showToast(t('clinic_toast_reason', 'Please describe the reason for your visit'), 'error');
     return;
   }
 
@@ -182,7 +190,7 @@ async function handleAppointmentSubmit(event) {
       date,
       time,
       partySize: 1,
-      notes: (reason ? `Reason: ${reason}. ` : '') + (notes || ''),
+      notes: (reason ? `${t('clinic_reason_prefix', 'Reason: ')}${reason}. ` : '') + (notes || ''),
       contactEmail: email,
     };
 
@@ -192,7 +200,7 @@ async function handleAppointmentSubmit(event) {
 
     console.log('✅ Appointment created:', response);
 
-    showToast(`🎉 Appointment confirmed at ${selectedClinic.name}!\n📧 Check ${email} for confirmation`, 'success');
+    showToast(`${t('clinic_toast_confirmed', '🎉 Appointment confirmed at ')}${selectedClinic.name}${t('clinic_toast_check_email', '!\\n📧 Check ')}${email}${t('clinic_toast_for_confirmation', ' for confirmation')}`, 'success');
     
     setTimeout(() => {
       closeAppointmentForm();
@@ -200,7 +208,7 @@ async function handleAppointmentSubmit(event) {
     }, 1000);
   } catch (err) {
     console.error('❌ Appointment error:', err);
-    showToast(`Booking failed: ${err.message}`, 'error');
+    showToast(`${t('clinic_toast_failed', 'Booking failed: ')}${err.message}`, 'error');
   } finally {
     hideSpinner(submitButton);
   }
