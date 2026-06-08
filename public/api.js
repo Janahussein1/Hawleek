@@ -1,4 +1,25 @@
 
+// Register a default Trusted Types policy to resolve CSP HTML security issues on innerHTML and createContextualFragment
+if (window.trustedTypes && window.trustedTypes.createPolicy && !window.trustedTypes.defaultPolicy) {
+  try {
+    window.trustedTypes.createPolicy('default', {
+      createHTML: (string) => string,
+      createScript: (string) => string,
+      createScriptURL: (string) => string
+    });
+  } catch (e) {
+    console.warn('Could not register default Trusted Types policy:', e);
+  }
+}
+
+// Global translation helper for client-side JS scripts
+window.t = function(key, fallback = '') {
+  if (window.__translations && window.__translations[key] !== undefined) {
+    return window.__translations[key];
+  }
+  return fallback || key;
+};
+
 // Change this to your deployed backend URL when you deploy
 const API_BASE = window.location.origin + '/api';
 
@@ -80,7 +101,7 @@ function hideSpinner(btn) {
 
 function requireAuth() {
   if (!getToken()) {
-    window.location.href = '/Homepage /login.html';
+    window.location.href = '/dashboard/login';
   }
 }
 function requireRole(...roles) {
@@ -119,21 +140,28 @@ function logout() {
 
 function renderPagination(containerId, pagination, onPageChange) {
   const container = document.getElementById(containerId);
-  if (!container || pagination.totalPages <= 1) {
-    if (container) container.innerHTML = '';
-    return;
-  }
+  if (!container) return;
+  
+  container.innerHTML = '';
+  if (pagination.totalPages <= 1) return;
 
-  let html = '<div style="display:flex;gap:8px;justify-content:center;margin-top:20px;flex-wrap:wrap">';
+  const wrapper = document.createElement('div');
+  wrapper.style.cssText = 'display:flex;gap:8px;justify-content:center;margin-top:20px;flex-wrap:wrap';
+
   for (let i = 1; i <= pagination.totalPages; i++) {
     const active = i === pagination.page;
-    html += `<button onclick="(${onPageChange.toString()})(${i})"
-      style="padding:8px 14px;border-radius:8px;border:1px solid ${active ? '#0f6e56' : '#ddd'};
-      background:${active ? '#0f6e56' : '#fff'};color:${active ? '#fff' : '#333'};cursor:pointer;">
-      ${i}</button>`;
+    const btn = document.createElement('button');
+    btn.textContent = i;
+    btn.style.cssText = `padding:8px 14px;border-radius:8px;border:1px solid ${active ? '#0f6e56' : '#ddd'};
+      background:${active ? '#0f6e56' : '#fff'};color:${active ? '#fff' : '#333'};cursor:pointer;`;
+    
+    btn.addEventListener('click', () => {
+      onPageChange(i);
+    });
+    
+    wrapper.appendChild(btn);
   }
-  html += '</div>';
-  container.innerHTML = html;
+  container.appendChild(wrapper);
 }
 
 
