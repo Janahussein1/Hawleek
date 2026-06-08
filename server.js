@@ -9,6 +9,9 @@ const i18n       = require('i18n');
 const rateLimit  = require('express-rate-limit');
 const connectDB  = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
+const https      = require('https');
+const http       = require('http');
+const fs         = require('fs');
 
 i18n.configure({
   locales: ['en', 'ar'],
@@ -55,7 +58,59 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+// Parse cookies manually for i18n and session token support
+app.use((req, res, next) => {
+  req.cookies = {};
+  const cookieHeader = req.headers.cookie;
+  if (cookieHeader) {
+    cookieHeader.split(';').forEach(cookie => {
+      const parts = cookie.split('=');
+      if (parts.length >= 2) {
+        req.cookies[parts[0].trim()] = parts.slice(1).join('=').trim();
+      }
+    });
+  }
+  next();
+});
+
+// Force HTTPS redirect if certificates exist and connection is not secure
+app.use((req, res, next) => {
+  const keyPath = path.join(__dirname, 'config', 'certs', 'key.pem');
+  const certPath = path.join(__dirname, 'config', 'certs', 'cert.pem');
+  if (fs.existsSync(keyPath) && fs.existsSync(certPath) && !req.secure && req.get('x-forwarded-proto') !== 'https') {
+    return res.redirect('https://' + req.headers.host + req.url);
+  }
+  next();
+});
+
+// Persist language choice in a cookie so it applies to ALL pages
+app.use((req, res, next) => {
+  const langQuery = req.query.lang;
+  if (langQuery && ['en', 'ar'].includes(langQuery)) {
+    // Set a long-lived cookie so every future request uses this locale
+    res.setHeader('Set-Cookie', `lang=${langQuery}; Path=/; Max-Age=${365 * 24 * 60 * 60}; SameSite=Lax`);
+    req.cookies.lang = langQuery;
+  }
+  next();
+});
+
 app.use(i18n.init);
+
+// After i18n.init, override locale from cookie if no query param was supplied
+app.use((req, res, next) => {
+  // If the user set ?lang=xx on this request, i18n already picked it up.
+  // Otherwise, honour the cookie.
+  if (!req.query.lang && req.cookies.lang && ['en', 'ar'].includes(req.cookies.lang)) {
+    i18n.setLocale(req, req.cookies.lang);
+  }
+  const currentLocale = i18n.getLocale(req) || 'en';
+  res.locals.locale = currentLocale;
+  res.locals.dir = currentLocale === 'ar' ? 'rtl' : 'ltr';
+  // Expose translations as a JSON string for client-side JS scripts
+  const catalog = i18n.getCatalog(currentLocale) || {};
+  res.locals.translationsJson = JSON.stringify(catalog);
+  next();
+});
 
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -136,8 +191,26 @@ const startServer = async () => {
   console.log('DEBUG: using MONGO_URI =', process.env.MONGO_URI);
   await connectDB();
 
-  const server = app.listen(PORT, () => {
-    console.log(`✅ Hawleek server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
+  const keyPath = path.join(__dirname, 'config', 'certs', 'key.pem');
+  const certPath = path.join(__dirname, 'config', 'certs', 'cert.pem');
+  const hasCerts = fs.existsSync(keyPath) && fs.existsSync(certPath);
+
+  let server;
+  if (hasCerts) {
+    const sslOptions = {
+      key: fs.readFileSync(keyPath),
+      cert: fs.readFileSync(certPath)
+    };
+    server = https.createServer(sslOptions, app);
+    console.log('🔒 SSL Certificates found. Starting server in HTTPS mode...');
+  } else {
+    server = http.createServer(app);
+    console.log('🔓 SSL Certificates not found. Starting server in HTTP mode...');
+  }
+
+  server.listen(PORT, () => {
+    const protocol = hasCerts ? 'https' : 'http';
+    console.log(`✅ Hawleek server running on ${protocol}://localhost:${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
   });
 
   server.on('error', (err) => {
