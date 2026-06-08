@@ -32,7 +32,6 @@ exports.sendContact = async (req, res, next) => {
         <table width="600" cellpadding="0" cellspacing="0"
           style="max-width:600px;width:100%;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
 
-          <!-- Header -->
           <tr>
             <td style="background:linear-gradient(135deg,${isServiceRequest ? '#d97706' : '#0f6e56'},${isServiceRequest ? '#f59e0b' : '#1a9b75'});padding:36px 40px;text-align:center;">
               <h1 style="margin:0;color:#fff;font-size:24px;font-weight:700;">
@@ -42,7 +41,6 @@ exports.sendContact = async (req, res, next) => {
             </td>
           </tr>
 
-          <!-- Body -->
           <tr>
             <td style="padding:32px 40px;">
               <table width="100%" cellpadding="0" cellspacing="0"
@@ -60,7 +58,6 @@ exports.sendContact = async (req, res, next) => {
             </td>
           </tr>
 
-          <!-- Footer -->
           <tr>
             <td style="background:#f8fffe;padding:20px 40px;text-align:center;border-top:1px solid #e0f5ee;">
               <p style="margin:0;font-size:12px;color:#bbb;">© ${new Date().getFullYear()} Hawleek · Neighborhood Guide</p>
@@ -87,7 +84,6 @@ exports.sendContact = async (req, res, next) => {
         <table width="600" cellpadding="0" cellspacing="0"
           style="max-width:600px;width:100%;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
 
-          <!-- Header -->
           <tr>
             <td style="background:linear-gradient(135deg,#0f6e56,#1a9b75);padding:40px;text-align:center;">
               <h1 style="margin:0;color:#fff;font-size:28px;font-weight:700;">🏘️ Hawleek</h1>
@@ -95,7 +91,6 @@ exports.sendContact = async (req, res, next) => {
             </td>
           </tr>
 
-          <!-- Body -->
           <tr>
             <td style="padding:36px 40px;">
               <h2 style="margin:0 0 12px;color:#1a1a1a;font-size:22px;">
@@ -108,7 +103,6 @@ exports.sendContact = async (req, res, next) => {
                   : 'thank you for reaching out to us. We have received your message and our team will get back to you shortly.'}
               </p>
 
-              <!-- What they sent -->
               <table width="100%" cellpadding="0" cellspacing="0"
                 style="background:#f8fffe;border:2px solid #e0f5ee;border-radius:12px;margin-bottom:20px;">
                 <tr><td style="padding:20px 24px;">
@@ -134,7 +128,6 @@ exports.sendContact = async (req, res, next) => {
             </td>
           </tr>
 
-          <!-- Footer -->
           <tr>
             <td style="background:#f8fffe;padding:24px 40px;text-align:center;border-top:1px solid #e0f5ee;">
               <p style="margin:0;font-size:12px;color:#bbb;">

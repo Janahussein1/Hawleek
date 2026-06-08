@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Restaurant Management Dashboard</title>
+<link rel="stylesheet" href="/dashboard/dashboard.css">
+</head>
+<body>
+
+<div id="toast-container"></div>
+
+<nav>
+<a href="#">Dashboard</a>
+<a href="/pages/clinics.ejs">clinics.ejs</a>
+<a href="/pages/transport.ejs">transport.ejs</a>
+<a href="/">Logout</a>
+</nav>
+
+<h1>Restaurant Management Dashboard</h1>
+
+<h2>Reservation Counts</h2>
+<ul>
+<li>Total Bookings: <strong id="stat-total">0</strong></li>
+<li>Pending: <strong id="stat-pending">0</strong></li>
+<li>Cancelled: <strong id="stat-cancelled">0</strong></li>
+</ul>
+
+<h2>Add New Reservation</h2>
+<div id="form-container">
+<form id="addReservationForm">
+<label for="resName">Customer Name:</label>
+<input type="text" id="resName" placeholder="Letters only (e.g. John Doe)" required>
+
+<label for="resGuests">Number of Guests:</label>
+<input type="number" id="resGuests" value="1" required>
+
+<label for="resDateTime">Date & Time:</label>
+<input type="datetime-local" id="resDateTime" required>
+
+<button type="submit">Add Reservation</button>
+</form>
+</div>
+
+<h2>All Reservations</h2>
+<table>
+<thead>
+<tr>
+<th>Customer Name</th>
+<th>Guests</th>
+<th>Date & Time</th>
+<th>Status</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="reservation-table-body">
+</tbody>
+</table>
+
+<script src="/public/api.js"></script>
+<script src="/dashboard/javadashboard.js"></script>
+</body>
+</html>

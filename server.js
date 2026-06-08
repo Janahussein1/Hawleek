@@ -1,7 +1,6 @@
 require('dotenv').config({ override: true });
 require('express-async-errors');
 
-
 const express    = require('express');
 const cors       = require('cors');
 const path       = require('path');
@@ -130,11 +129,6 @@ app.get('/dashboard/login.ejs', (req, res) => {
 });
 
  
-// TODO: add routes for places, bookings, and reviews if your app should expose those endpoints.
-// app.use('/api/places',    require('./routes/place'));
-// app.use('/api/bookings',  require('./routes/booking'));
-// app.use('/api/reviews',   require('./routes/review'));
-
 // Public page routes (render views/pages/*.ejs)
 app.get('/services', (req, res) => res.render('pages/services'));
 app.get('/services/request', (req, res) => res.render('pages/serviceRequest'));
@@ -181,6 +175,8 @@ app.use((req, res) => {
 
 app.use(errorHandler);
 
+// --- UPDATED PRODUCTION READY SERVER BOOTSTRAP UP ---
+
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
@@ -189,7 +185,10 @@ const startServer = async () => {
 
   const keyPath = path.join(__dirname, 'config', 'certs', 'key.pem');
   const certPath = path.join(__dirname, 'config', 'certs', 'cert.pem');
-  const hasCerts = fs.existsSync(keyPath) && fs.existsSync(certPath);
+  
+  // Explicitly check if running inside a cloud environment like Railway
+  const isRailway = !!process.env.RAILWAY_ENVIRONMENT;
+  const hasCerts = !isRailway && fs.existsSync(keyPath) && fs.existsSync(certPath);
 
   let server;
   if (hasCerts) {
@@ -201,12 +200,14 @@ const startServer = async () => {
     console.log('🔒 SSL Certificates found. Starting server in HTTPS mode...');
   } else {
     server = http.createServer(app);
-    console.log('🔓 SSL Certificates not found. Starting server in HTTP mode...');
+    console.log('🔓 SSL Certificates ignored or missing. Starting server in HTTP mode...');
   }
 
-  server.listen(PORT, () => {
+  // Bind to '0.0.0.0' to ensure external visibility in Railway
+  server.listen(PORT, '0.0.0.0', () => {
     const protocol = hasCerts ? 'https' : 'http';
-    console.log(`✅ Hawleek server running on ${protocol}://localhost:${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
+    const host = hasCerts ? 'localhost' : '0.0.0.0';
+    console.log(`✅ Hawleek server running on ${protocol}://${host}:${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
   });
 
   server.on('error', (err) => {
