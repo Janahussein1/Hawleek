@@ -1,4 +1,3 @@
-
 // Register a default Trusted Types policy to resolve CSP HTML security issues on innerHTML and createContextualFragment
 if (window.trustedTypes && window.trustedTypes.createPolicy && !window.trustedTypes.defaultPolicy) {
   try {
