@@ -5,16 +5,12 @@ exports.sendContact = async (req, res, next) => {
   const { name, email, message } = req.body;
 
   // ── Name Validation ──
-  // Trims whitespace and ensures the name isn't empty, then validates via regex
   const trimmedName = name ? name.trim() : '';
-  
-  // This regex allows English/Latin letters, spaces, hyphens, and apostrophes
   const nameRegex = /^[a-zA-Z\s'-]+$/;
 
   if (!trimmedName) {
     return next(new AppError('Please provide your name.', 400));
   }
-
   if (!nameRegex.test(trimmedName)) {
     return next(new AppError('Name can only contain letters, spaces, hyphens, or apostrophes.', 400));
   }
