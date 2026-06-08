@@ -17,7 +17,7 @@ const placeUpload = uploadFields([
 
 const placeRules = [
   body('name').trim().notEmpty().withMessage('Place name is required'),
-  body('type').isIn(['restaurant', 'cafe', 'clinic', 'station', 'pharmacy', 'gym', 'other'])
+  body('type').isIn(['restaurant', 'cafe', 'clinic', 'station', 'pharmacy', 'gym', 'toilet', 'mosque', 'other'])
     .withMessage('Invalid place type'),
   body('neighborhood').trim().notEmpty().withMessage('Neighborhood is required'),
   body('address').trim().notEmpty().withMessage('Address is required'),
