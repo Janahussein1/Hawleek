@@ -13,6 +13,7 @@ router.get('/profile',       getProfile);
 router.put('/profile',       updateProfile);
 router.put('/avatar',        uploadSingle('avatar'), uploadAvatar);
 router.get('/my-bookings',   getMyBookings);
+router.get('/bookings',      getMyBookings);
 router.get('/my-reviews',    getMyReviews);
 router.delete('/account',    deleteAccount);
 
