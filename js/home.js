@@ -2,29 +2,36 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const localBusinesses = [
         {
-            name: "Neighborhood Pizzeria",
-            description: "Authentic wood-fired pizza right around the corner.",
-            image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800",
-            link: "/pages/booking.ejs",
-            linkText: "Book a Table"
+            name: t('local_pizza_name', "Neighborhood Pizzeria"),
+            description: t('local_pizza_desc', "Authentic wood-fired pizza right around the corner."),
+            image: "/photos/restaurant.jpg",
+            link: "/booking",
+            linkText: t('home_book_table', "Book a Table")
         },
         {
-            name: "Sayed Electric & Plumbing",
-            description: "Reliable home maintenance and emergency repairs.",
-            image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800",
-            link: "/pages/booking.ejs",
-            linkText: "Request service"
+            name: t('local_service_name', "Sayed Electric & Plumbing"),
+            description: t('local_service_desc', "Reliable home maintenance and emergency repairs."),
+            image: "/photos/technician.jpg",
+            link: "/services/request",
+            linkText: t('home_request_service', "Request Service")
         },
         {
-            name: "Local Transport Hub",
-            description: "Track microbuses and find the nearest stations in real-time.",
-            image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800",
-            link: "/pages/transport.ejs",
-            linkText: "View Schedule"
+            name: t('local_transport_name', "Local Transport Hub"),
+            description: t('local_transport_desc', "Track microbuses and find the nearest stations in real-time."),
+            image: "/photos/transportation.jpg",
+            link: "/transport",
+            linkText: t('home_view_transport', "View Schedule")
         }
     ];
 
     const servicesWrapper = document.querySelector(".services-wrapper") || document.getElementById('search-results');
+    const weatherInfo = document.getElementById('weather-info');
+    if (weatherInfo) {
+      API.get('/weather').then((resp) => {
+        const weather = resp.data;
+        weatherInfo.innerHTML = `<div class="weather-card">${weather.city}: ${weather.temperature}°C, ${weather.description}</div>`;
+      }).catch(() => { weatherInfo.textContent = t('weather_unavailable','Weather unavailable.'); });
+    }
 
     // Render initial featured items (simple fallback)
     if (servicesWrapper) {
@@ -48,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const cat = document.getElementById('category')?.value;
         const target = document.getElementById('search-results');
         if (!target) return;
-        target.innerHTML = '<p class="loading-message">Searching &hellip;</p>';
+        target.innerHTML = '<p class="loading-message">' + t('search_loading', 'Searching &hellip;') + '</p>';
         try {
             let url = `/places?limit=24`;
             if (q) url += `&search=${encodeURIComponent(q)}`;
@@ -56,25 +63,42 @@ document.addEventListener("DOMContentLoaded", () => {
             const res = await API.get(url);
             const results = Array.isArray(res.data) ? res.data : [];
             if (results.length === 0) {
-                target.innerHTML = '<p class="notice">No results found.</p>';
+                target.innerHTML = '<p class="notice">' + t('search_no_results', 'No results found.') + '</p>';
                 return;
             }
-            target.innerHTML = results.map(place => `
+            target.innerHTML = results.map(place => {
+                let actionLink = '';
+                const type = place.type || 'other';
+                if (type === 'restaurant' || type === 'cafe' || type === 'food') {
+                    actionLink = `<a href="/booking?placeId=${place._id}" class="book-link">${t('home_book_table', 'Book a Table')}</a>`;
+                } else if (type === 'clinic') {
+                    actionLink = `<a href="/clinics?placeId=${place._id}" class="book-link">${t('home_book_clinic', 'Book Appointment')}</a>`;
+                } else if (type === 'transport' || type === 'station') {
+                    actionLink = `<a href="/transport" class="book-link">${t('home_view_transport', 'View Transport')}</a>`;
+                } else if (type === 'toilet') {
+                    actionLink = `<a href="/toilets" class="book-link">${t('home_view_restroom', 'View Restroom')}</a>`;
+                } else if (type === 'mosque') {
+                    actionLink = `<a href="/mosques" class="book-link">${t('home_view_mosque', 'View Mosque')}</a>`;
+                } else {
+                    actionLink = `<a href="/services/request?placeId=${place._id}" class="book-link">${t('home_request_service', 'Request Service')}</a>`;
+                }
+
+                return `
                 <article class="card">
                     <img src="${place.coverImage || '/photos/pizzaria.jpg'}" alt="${place.name}">
                     <div class="card-content">
                         <h3>${place.name}</h3>
+                        <span class="category-badge" style="display:inline-block;padding:2px 8px;font-size:0.75rem;background:var(--primary-light);color:var(--primary);border:1px solid var(--primary-border);border-radius:4px;margin-bottom:8px;text-transform:capitalize;font-weight:600;">${t('type_' + type, type)}</span>
                         <p>${place.description || ''}</p>
                         <div style="margin-top:8px">
-                            ${place.type === 'restaurant' || place.type === 'food' ? `<a href="/booking" class="book-link">Book at this Restaurant</a>` : ''}
-                            ${place.type === 'clinic' ? `<a href="/clinics" class="book-link">Book Appointment</a>` : ''}
-                            ${place.type === 'transport' ? `<a href="/transport" class="book-link">View Transport</a>` : ''}
+                            ${actionLink}
                         </div>
                     </div>
                 </article>
-            `).join('');
+                `;
+            }).join('');
         } catch (err) {
-            target.innerHTML = `<p class="error-message">Search failed: ${err.message}</p>`;
+            target.innerHTML = `<p class="error-message">${t('search_failed', 'Search failed: ')} ${err.message}</p>`;
         }
     });
 
@@ -86,13 +110,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const email = document.getElementById('contact-email')?.value.trim();
         const message = document.getElementById('contact-message')?.value.trim();
         const resultEl = document.getElementById('contact-result');
-        resultEl.textContent = 'Sending…';
+        resultEl.textContent = t('contact_sending', 'Sending…');
         try {
             await API.post('/contact', { name, email, message });
-            resultEl.textContent = 'Message sent. Thank you!';
+            resultEl.textContent = t('contact_sent', 'Message sent. Thank you!');
             contactForm.reset();
         } catch (err) {
-            resultEl.textContent = `Failed to send: ${err.message}`;
+            resultEl.textContent = `${t('contact_failed', 'Failed to send: ')} ${err.message}`;
         }
     });
 });
