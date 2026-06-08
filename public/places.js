@@ -192,7 +192,7 @@ async function loadPlaceDetail() {
             ? '<p style="color:#888">No reviews yet. Be the first!</p>'
             : reviews.map(renderReview).join('')}
         </div>
-        ${getToken() ? renderReviewForm(id) : '<p><a href="/Homepage /login.html">Login to add a review</a></p>'}
+        ${getToken() ? renderReviewForm(id) : '<p><a href="/dashboard/login">Login to add a review</a></p>'}
       `;
     }
 
@@ -253,7 +253,7 @@ function renderBookingForm(place) {
         ? `<button type="submit" id="booking-btn"
             style="padding:12px;background:#0f6e56;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:15px">
             Confirm ${type === 'appointment' ? 'Appointment' : 'Reservation'}</button>`
-        : `<a href="/Homepage /login.html"
+        : `<a href="/dashboard/login"
             style="display:block;padding:12px;background:#0f6e56;color:#fff;text-decoration:none;
             border-radius:8px;text-align:center">Login to Book</a>`}
     </form>`;
@@ -265,7 +265,7 @@ function setupBookingForm(place, placeId) {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!getToken()) { window.location.href = '/Homepage /login.html'; return; }
+    if (!getToken()) { window.location.href = '/dashboard/login'; return; }
 
     const btn  = document.getElementById('booking-btn');
     const date = document.getElementById('booking-date').value;
@@ -325,7 +325,7 @@ function openSeatBooking(routeIndex, destination, price, available, placeId) {
 function setupSeatBooking() {} 
 
 async function confirmSeatBooking(placeId, routeIndex, price) {
-  if (!getToken()) { window.location.href = '/Homepage /login.html'; return; }
+  if (!getToken()) { window.location.href = '/dashboard/login'; return; }
 
   const seats = parseInt(document.getElementById('seats-count')?.value) || 1;
   const date  = document.getElementById('seat-date')?.value;
