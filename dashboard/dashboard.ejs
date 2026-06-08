@@ -1,480 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard | Hawleek</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/css/dashboard.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Restaurant Management Dashboard</title>
+<link rel="stylesheet" href="/dashboard/dashboard.css">
 </head>
 <body>
-  <!-- Header -->
-  <header class="dashboard-header">
-    <div class="logo">🏘️ Hawleek Dashboard</div>
-    <nav class="dash-nav">
-      <span class="user-welcome">Welcome, <strong id="user-name">User</strong></span>
-      <a href="/" class="nav-btn">Home</a>
-      <button onclick="logout()" class="logout-btn">Logout</button>
-    </nav>
-  </header>
 
-  <main class="dashboard-content">
-    <div id="toast-container"></div>
+<div id="toast-container"></div>
 
-    <!-- RESIDENT PANEL -->
-    <div id="resident-panel" class="role-panel" style="display: none;">
-      <div class="dashboard-tabs-bar">
-        <button class="tab-btn active" onclick="switchResidentTab('bookings', this)">📅 My Bookings</button>
-        <button class="tab-btn" onclick="switchResidentTab('reviews', this)">⭐ My Reviews</button>
-        <button class="tab-btn" onclick="switchResidentTab('profile', this)">👤 Profile & Security</button>
-      </div>
+<nav>
+<a href="#">Dashboard</a>
+<a href="/pages/clinics.ejs">clinics.ejs</a>
+<a href="/pages/transport.ejs">transport.ejs</a>
+<a href="/">Logout</a>
+</nav>
 
-      <!-- Bookings Tab -->
-      <div id="res-tab-bookings" class="tab-content active">
-        <section class="card">
-          <h2>📅 My Bookings</h2>
-          <div id="my-bookings" class="bookings-list">
-            <p class="loading-message">Loading your bookings...</p>
-          </div>
-          <div id="bookings-pagination"></div>
-        </section>
-      </div>
+<h1>Restaurant Management Dashboard</h1>
 
-      <!-- Reviews Tab -->
-      <div id="res-tab-reviews" class="tab-content">
-        <section class="card">
-          <h2>⭐ My Reviews</h2>
-          <div id="my-reviews" class="reviews-list">
-            <p class="loading-message">Loading your reviews...</p>
-          </div>
-        </section>
-      </div>
+<h2>Reservation Counts</h2>
+<ul>
+<li>Total Bookings: <strong id="stat-total">0</strong></li>
+<li>Pending: <strong id="stat-pending">0</strong></li>
+<li>Cancelled: <strong id="stat-cancelled">0</strong></li>
+</ul>
 
-      <!-- Profile & Security Tab -->
-      <div id="res-tab-profile" class="tab-content">
-        <div class="panel-grid">
-          <!-- Left column: Profile -->
-          <div class="main-column">
-            <section class="card">
-              <h2>👤 Profile Settings</h2>
-              <div class="avatar-section">
-                <label for="avatar-input" class="avatar-wrapper">
-                  <img id="profile-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200" alt="Avatar" class="avatar-img">
-                </label>
-                <div class="avatar-info">
-                  <p class="avatar-name" id="avatar-display-name">Your Name</p>
-                  <p class="avatar-email" id="avatar-display-email">your@email.com</p>
-                  <label for="avatar-input" class="upload-btn">Change Photo</label>
-                </div>
-                <input type="file" id="avatar-input" accept="image/*" style="display: none;">
-              </div>
+<h2>Add New Reservation</h2>
+<div id="form-container">
+<form id="addReservationForm">
+<label for="resName">Customer Name:</label>
+<input type="text" id="resName" placeholder="Letters only (e.g. John Doe)" required>
 
-              <form id="profile-form" class="dashboard-form">
-                <div class="input-group">
-                  <label for="profile-name">Full Name</label>
-                  <input type="text" id="profile-name" required>
-                </div>
-                <div class="input-group">
-                  <label for="profile-email">Email Address</label>
-                  <input type="email" id="profile-email" disabled>
-                </div>
-                <div class="input-group">
-                  <label for="profile-phone">Phone Number</label>
-                  <input type="text" id="profile-phone">
-                </div>
-                <div class="input-group">
-                  <label for="profile-neighborhood">Neighborhood</label>
-                  <input type="text" id="profile-neighborhood">
-                </div>
-                <button type="submit" class="primary-btn">Update Profile</button>
-              </form>
-            </section>
-          </div>
+<label for="resGuests">Number of Guests:</label>
+<input type="number" id="resGuests" value="1" required>
 
-          <!-- Right column: Password -->
-          <div class="sidebar-column">
-            <section class="card">
-              <h2>🔑 Change Password</h2>
-              <form id="change-password-form" class="dashboard-form">
-                <div class="input-group">
-                  <label for="current-password">Current Password</label>
-                  <input type="password" id="current-password" required>
-                </div>
-                <div class="input-group">
-                  <label for="new-password">New Password</label>
-                  <input type="password" id="new-password" required>
-                </div>
-                <div class="input-group">
-                  <label for="confirm-new-password">Confirm New Password</label>
-                  <input type="password" id="confirm-new-password" required>
-                </div>
-                <button type="submit" class="primary-btn">Change Password</button>
-              </form>
-            </section>
-          </div>
-        </div>
-      </div>
-    </div>
+<label for="resDateTime">Date & Time:</label>
+<input type="datetime-local" id="resDateTime" required>
 
-    <!-- BUSINESS OWNER PANEL -->
-    <div id="owner-panel" class="role-panel" style="display: none;">
-      <div class="dashboard-tabs-bar">
-        <button class="tab-btn active" onclick="switchOwnerTab('places', this)">🏢 My Places</button>
-        <button class="tab-btn" onclick="switchOwnerTab('bookings', this)">📅 Active Bookings</button>
-        <button class="tab-btn" onclick="switchOwnerTab('add-place', this)">➕ Add New Place</button>
-      </div>
+<button type="submit">Add Reservation</button>
+</form>
+</div>
 
-      <!-- My Places Tab -->
-      <div id="owner-tab-places" class="tab-content active">
-        <section class="card">
-          <h2>🏢 My Places</h2>
-          <div id="my-places" class="places-list">
-            <p class="loading-message">Loading your businesses...</p>
-          </div>
-        </section>
-      </div>
+<h2>All Reservations</h2>
+<table>
+<thead>
+<tr>
+<th>Customer Name</th>
+<th>Guests</th>
+<th>Date & Time</th>
+<th>Status</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="reservation-table-body">
+</tbody>
+</table>
 
-      <!-- Active Bookings Tab -->
-      <div id="owner-tab-bookings" class="tab-content">
-        <section class="card">
-          <h2 id="place-bookings-title">Select a business to view bookings</h2>
-          <div id="place-bookings" class="bookings-list">
-            <p class="notice">Select "Bookings" on one of your businesses to view active reservations.</p>
-          </div>
-        </section>
-      </div>
-
-      <!-- Add New Place Tab -->
-      <div id="owner-tab-add-place" class="tab-content">
-        <section class="card">
-          <h2>➕ Add New Place</h2>
-          <form id="add-place-form" class="dashboard-form" enctype="multipart/form-data">
-            <div class="input-group">
-              <label for="place-name">Place Name *</label>
-              <input type="text" name="name" id="place-name" required placeholder="e.g. Nile Bistro">
-            </div>
-            <div class="input-group">
-              <label>Type *</label>
-              <div class="type-bar">
-                <input type="radio" name="type" id="type-restaurant" value="restaurant" required checked>
-                <label for="type-restaurant">Restaurant</label>
-                
-                <input type="radio" name="type" id="type-cafe" value="cafe">
-                <label for="type-cafe">Cafe</label>
-                
-                <input type="radio" name="type" id="type-clinic" value="clinic">
-                <label for="type-clinic">Clinic</label>
-                
-                <input type="radio" name="type" id="type-station" value="station">
-                <label for="type-station">Station</label>
-                
-                <input type="radio" name="type" id="type-pharmacy" value="pharmacy">
-                <label for="type-pharmacy">Pharmacy</label>
-                
-                <input type="radio" name="type" id="type-gym" value="gym">
-                <label for="type-gym">Gym</label>
-                
-                <input type="radio" name="type" id="type-other" value="other">
-                <label for="type-other">Other</label>
-              </div>
-            </div>
-            <div class="input-group">
-              <label for="place-neighborhood">Neighborhood *</label>
-              <input type="text" name="neighborhood" id="place-neighborhood" required placeholder="e.g. Maadi">
-            </div>
-            <div class="input-group">
-              <label for="place-address">Address *</label>
-              <input type="text" name="address" id="place-address" required placeholder="e.g. 15 Road 9">
-            </div>
-            <div class="input-group">
-              <label for="place-phone">Phone</label>
-              <input type="text" name="phone" id="place-phone">
-            </div>
-            <div class="input-group">
-              <label for="place-hours">Opening Hours</label>
-              <input type="text" name="openingHours" id="place-hours" placeholder="e.g. 9:00 AM - 11:00 PM">
-            </div>
-            <div class="input-group">
-              <label for="place-description">Description</label>
-              <textarea name="description" id="place-description" rows="3" placeholder="Tell customers about your place..."></textarea>
-            </div>
-            <div class="input-group">
-              <label for="place-coverImage">Cover Image</label>
-              <input type="file" name="coverImage" id="place-coverImage" accept="image/*">
-            </div>
-            <button type="submit" class="primary-btn">Register Place</button>
-          </form>
-        </section>
-      </div>
-
-      <div id="edit-place-panel" style="display: none;"></div>
-    </div>
-
-    <!-- ADMIN PANEL -->
-    <div id="admin-panel" class="role-panel" style="display: none;">
-      <div class="dashboard-tabs-bar">
-        <button class="tab-btn active" onclick="switchAdminTab('overview', this)">📊 Overview</button>
-        <button class="tab-btn" onclick="switchAdminTab('places', this)">🏢 Manage Places</button>
-        <button class="tab-btn" onclick="switchAdminTab('users', this)">👥 Manage Users</button>
-        <button class="tab-btn" onclick="switchAdminTab('bookings', this)">📅 Manage Bookings</button>
-      </div>
-
-      <!-- Overview Tab -->
-      <div id="admin-tab-overview" class="tab-content active">
-        <!-- Stats Summary -->
-        <div class="stats-row">
-          <div class="stat-card">
-            <div class="stat-num" id="stat-users">0</div>
-            <div class="stat-label">Active Users</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-num" id="stat-places">0</div>
-            <div class="stat-label">Active Places</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-num" id="stat-bookings">0</div>
-            <div class="stat-label">Total Bookings</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-num" id="stat-reviews">0</div>
-            <div class="stat-label">Total Reviews</div>
-          </div>
-          <div class="stat-card warning">
-            <div class="stat-num" id="stat-pending-places">0</div>
-            <div class="stat-label">Pending Verification</div>
-          </div>
-          <div class="stat-card info">
-            <div class="stat-num" id="stat-pending-bookings">0</div>
-            <div class="stat-label">Pending Bookings</div>
-          </div>
-        </div>
-
-        <!-- Quick Lists -->
-        <div class="panel-grid">
-          <div class="main-column">
-            <section class="card">
-              <h2>Recent Bookings</h2>
-              <div class="table-container">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Place</th>
-                      <th>Type</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody id="recent-bookings">
-                    <tr><td colspan="5" class="loading-message">Loading...</td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </section>
-          </div>
-          <div class="sidebar-column">
-            <section class="card">
-              <h2>Recent Users</h2>
-              <div class="table-container">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Role</th>
-                      <th>Joined</th>
-                    </tr>
-                  </thead>
-                  <tbody id="recent-users">
-                    <tr><td colspan="4" class="loading-message">Loading...</td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </section>
-          </div>
-        </div>
-      </div>
-
-      <!-- Manage Places Section -->
-      <div id="admin-tab-places" class="tab-content">
-        <section class="card">
-          <div class="section-header-filters">
-            <h2>🏢 Manage Directory Places</h2>
-            <div class="filter-controls">
-              <input type="text" id="admin-place-search" placeholder="Search place name..." oninput="loadAdminPlaces()">
-              <select id="admin-place-type" onchange="loadAdminPlaces()">
-                <option value="">All Types</option>
-                <option value="restaurant">Restaurant</option>
-                <option value="cafe">Cafe</option>
-                <option value="clinic">Clinic</option>
-                <option value="station">Station</option>
-                <option value="pharmacy">Pharmacy</option>
-                <option value="gym">Gym</option>
-                <option value="toilet">Restroom</option>
-                <option value="mosque">Mosque</option>
-              </select>
-              <select id="admin-place-verified" onchange="loadAdminPlaces()">
-                <option value="">All Verification</option>
-                <option value="true">Verified</option>
-                <option value="false">Pending</option>
-              </select>
-            </div>
-          </div>
-          <div class="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>Place Name</th>
-                  <th>Type</th>
-                  <th>Neighborhood</th>
-                  <th>Owner</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="admin-places">
-                <tr><td colspan="6" class="loading-message">Loading...</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div id="admin-places-pagination"></div>
-        </section>
-      </div>
-
-      <!-- Manage Users Section -->
-      <div id="admin-tab-users" class="tab-content">
-        <section class="card">
-          <div class="section-header-filters">
-            <h2>👥 Manage Platform Users</h2>
-            <div class="filter-controls">
-              <input type="text" id="admin-user-search" placeholder="Search name or email..." oninput="loadAdminUsers()">
-              <select id="admin-user-role" onchange="loadAdminUsers()">
-                <option value="">All Roles</option>
-                <option value="resident">Resident</option>
-                <option value="business_owner">Business Owner</option>
-                <option value="admin">Administrator</option>
-              </select>
-            </div>
-          </div>
-          <div class="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Role</th>
-                  <th>Neighborhood</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="admin-users">
-                <tr><td colspan="6" class="loading-message">Loading...</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div id="admin-users-pagination"></div>
-        </section>
-      </div>
-
-      <!-- Manage Bookings Section -->
-      <div id="admin-tab-bookings" class="tab-content">
-        <section class="card">
-          <div class="section-header-filters">
-            <h2>📅 View All Bookings</h2>
-            <div class="filter-controls">
-              <select id="admin-booking-status" onchange="loadAdminBookings()">
-                <option value="">All Bookings</option>
-                <option value="pending">Pending</option>
-                <option value="confirmed">Confirmed</option>
-                <option value="completed">Completed</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
-            </div>
-          </div>
-          <div class="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>Customer</th>
-                  <th>Place</th>
-                  <th>Type</th>
-                  <th>Date & Time</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="admin-bookings">
-                <tr><td colspan="6" class="loading-message">Loading...</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div id="admin-bookings-pagination"></div>
-        </section>
-      </div>
-    </div>
-  </main>
-
-  <script src="/public/api.js"></script>
-  <script>
-    // Tab switching handlers
-    function switchResidentTab(tabId, btn) {
-      document.querySelectorAll('#resident-panel .tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('#resident-panel .tab-btn').forEach(el => el.classList.remove('active'));
-      const target = document.getElementById('res-tab-' + tabId);
-      if (target) target.classList.add('active');
-      if (btn) btn.classList.add('active');
-    }
-
-    function switchOwnerTab(tabId, btn) {
-      document.querySelectorAll('#owner-panel .tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('#owner-panel .tab-btn').forEach(el => el.classList.remove('active'));
-      const target = document.getElementById('owner-tab-' + tabId);
-      if (target) target.classList.add('active');
-      if (btn) btn.classList.add('active');
-    }
-
-    function switchAdminTab(tabId, btn) {
-      document.querySelectorAll('#admin-panel .tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('#admin-panel .tab-btn').forEach(el => el.classList.remove('active'));
-      const target = document.getElementById('admin-tab-' + tabId);
-      if (target) target.classList.add('active');
-      if (btn) btn.classList.add('active');
-    }
-
-    // Client-side show correct dashboard panel based on user role
-    document.addEventListener('DOMContentLoaded', () => {
-      const user = getUser();
-      if (user) {
-        document.getElementById('user-name').textContent = user.name;
-
-        // Populate avatar info card (WhatsApp-style)
-        const avatarName  = document.getElementById('avatar-display-name');
-        const avatarEmail = document.getElementById('avatar-display-email');
-        if (avatarName)  avatarName.textContent  = user.name  || 'Your Name';
-        if (avatarEmail) avatarEmail.textContent = user.email || '';
-
-        // Pre-fill profile form fields
-        const nameInput  = document.getElementById('profile-name');
-        const emailInput = document.getElementById('profile-email');
-        const phoneInput = document.getElementById('profile-phone');
-        const neighInput = document.getElementById('profile-neighborhood');
-        if (nameInput)  nameInput.value  = user.name         || '';
-        if (emailInput) emailInput.value = user.email        || '';
-        if (phoneInput) phoneInput.value = user.phone        || '';
-        if (neighInput) neighInput.value = user.neighborhood || '';
-
-        if (user.role === 'admin') {
-          document.getElementById('admin-panel').style.display = 'block';
-        } else if (user.role === 'business_owner') {
-          document.getElementById('owner-panel').style.display = 'block';
-        } else {
-          document.getElementById('resident-panel').style.display = 'block';
-        }
-      }
-    });
-  </script>
-  <script src="/js/dashboard.js"></script>
+<script src="/public/api.js"></script>
+<script src="/dashboard/javadashboard.js"></script>
 </body>
 </html>
