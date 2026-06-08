@@ -25,7 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (appointmentForm) {
-        appointmentForm.addEventListener("submit", function(event) {
+
+        appointmentForm.addEventListener("submit", async function(event) {
             event.preventDefault(); 
 
             const vendor = vendorSelect.value;
@@ -34,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const phone = document.getElementById("phone").value.trim();
             const date = document.getElementById("date").value;
 
+           
             if (vendor === "") {
                 alert("Please select a Business/Vendor.");
                 return;
@@ -72,13 +74,35 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            alert(`Success! Your booking request for ${fullName} has been submitted.`);
-            appointmentForm.reset(); 
             
-            // Reset dynamic fields back to default
-            serviceTypeLabel.textContent = "Type of Service:";
-            serviceTypeInput.type = "text";
-            serviceTypeInput.placeholder = "e.g. Table for 4, or AC Repair";
+            const submitBtn = this.querySelector("button[type=submit]");
+            showSpinner(submitBtn);
+
+            try {
+                await API.post("/bookings/guest", {
+                    placeId: "YOUR_PLACE_ID_FROM_DB", 
+                    type:    "other",
+                    date:    date,
+                    time:    "12:00",
+                    partySize: vendor === "pizzeria" ? parseInt(serviceTypeValue) || 1 : 1,
+                    notes:   `${vendor} - ${serviceTypeValue}`,
+                    contactEmail: document.getElementById("email")?.value || "guest@hawleek.com",
+                    name:    fullName,
+                });
+
+                showToast(`Booking submitted for ${fullName}!`, "success");
+                appointmentForm.reset(); 
+                
+               
+                serviceTypeLabel.textContent = "Type of Service:";
+                serviceTypeInput.type = "text";
+                serviceTypeInput.placeholder = "e.g. Table for 4, or AC Repair";
+
+            } catch (err) {
+                showToast(`Failed: ${err.message}`, "error");
+            } finally {
+                hideSpinner(submitBtn);
+            }
         });
     }
 });
