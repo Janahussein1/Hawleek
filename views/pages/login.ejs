@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/login.css">
+    <title>Admin Login</title>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <a href="/" class="logo-link">Hawleek</a>
+                <h1>Admin Portal Login</h1>
+                <p>Please enter your credentials to access the dashboard</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="adminUser">Username</label>
+                    <input type="text" id="adminUser" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="adminPass">Password</label>
+                    <input type="password" id="adminPass" required>
+                </div>
+                
+                <button type="submit" class="submit-btn">Login</button>
+            </form>
+            
+            <div class="login-footer">
+                <p>Back to <a href="/" class="accent-text">Home</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Error/Success Messages -->
+    <div id="loginModal" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div class="modal-content" style="background: white; padding: 24px; border-radius: 12px; max-width: 400px; text-align: center;">
+            <p id="modalText" style="margin-bottom: 16px; font-size: 16px;"></p>
+            <button id="closeModalBtn" style="padding: 8px 16px; background: #0f6e56; color: white; border: none; border-radius: 8px; cursor: pointer;">Close</button>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/login.js"></script>
+</body>
+</html>
