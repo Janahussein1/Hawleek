@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= locale %>" dir="<%= dir %>">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Book Medical Appointments | Hawleek</title>
+  <title><%= __("nav_clinics") %> | <%= __("logo_title") %></title>
   <link rel="stylesheet" href="/css/style.css">
   <style>
     body { background:#f7fafc; color:#111827; font-family:Inter,system-ui,sans-serif; margin:0; }
@@ -24,11 +24,6 @@
     .appointment-btn:hover { transform:translateY(-1px); background:#115f4f; }
     #appointment-panel { margin-top:28px; }
     .appointment-card { background:#fff; border:1px solid #e5e7eb; border-radius:22px; padding:24px; position:relative; box-shadow:0 24px 65px rgba(15,23,42,0.08); }
-    .appointment-header { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:20px; }
-    .appointment-header h2 { margin:0; font-size:1.75rem; }
-    .eyebrow { margin:0 0 6px; color:#dc2626; font-size:.9rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; }
-    .subtitle { margin:0; color:#6b7280; line-height:1.8; }
-    .close-button { border:none; background:transparent; font-size:1.4rem; color:#6b7280; cursor:pointer; }
     .appointment-card label { display:block; margin-bottom:16px; color:#374151; font-weight:600; font-size:.95rem; }
     .appointment-card input,
     .appointment-card textarea { width:100%; border:1px solid #d1d5db; border-radius:12px; padding:12px 14px; font-size:.95rem; color:#111827; outline:none; }
@@ -41,22 +36,54 @@
     .help-text { margin-top:16px; color:#6b7280; font-size:.95rem; }
     .loading-message, .notice, .error-message { margin:18px 0; color:#6b7280; }
     .rating-badge { color:#666; font-size:0.9rem; }
+    .lang-switcher a {
+      background: #0f6e56;
+      color: #fff !important;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      transition: background 0.2s ease;
+    }
+    .lang-switcher a:hover {
+      background: #115f4f;
+    }
+    [dir="rtl"] .nav-links {
+      direction: rtl;
+    }
     @media (max-width:720px) { .page-header { flex-direction:column; } }
   </style>
+  <script>
+    window.__translations = <%- translationsJson %>;
+  </script>
 </head>
 <body>
   <div class="page-shell">
     <header class="page-header">
       <div>
-        <p class="eyebrow">Hawleek Medical Appointments</p>
-        <h1>Book your medical appointment</h1>
-        <p class="page-intro">Choose a clinic, provide your health information, and receive a confirmation email with your appointment details. Each appointment is scheduled separately with our qualified healthcare professionals.</p>
+        <p class="eyebrow"><%= __("clinic_eyebrow") %></p>
+        <h1><%= __("clinic_title") %></h1>
+        <p class="page-intro"><%= __("clinic_desc") %></p>
       </div>
       <nav>
         <ul class="nav-links">
-          <li><a href="/booking">Restaurants</a></li>
-          <li><a href="/transport">Transport</a></li>
-          <li><a href="/toilets">Restrooms</a></li>
+          <li><a href="/"><%= __("nav_home") %></a></li>
+          <li><a href="/services"><%= __("nav_directory") %></a></li>
+          <li><a href="/booking"><%= __("nav_restaurants") %></a></li>
+          <li><a href="/clinics"><%= __("nav_clinics") %></a></li>
+          <li><a href="/transport"><%= __("nav_transport") %></a></li>
+          <li><a href="/mosques"><%= __("nav_mosques") %></a></li>
+          <li><a href="/toilets"><%= __("nav_restrooms") %></a></li>
+          <li data-show="guest"><a href="/dashboard/login"><%= __("nav_admin") %></a></li>
+          <li data-show="auth" style="display: none;"><a href="/dashboard"><%= __("nav_dashboard") %></a></li>
+          <li data-show="auth" style="display: none;"><a href="#" onclick="logout(); return false;"><%= __("nav_logout") %></a></li>
+          <li class="lang-switcher">
+            <% if (locale === 'en') { %>
+              <a href="?lang=ar" class="lang-btn">العربية</a>
+            <% } else { %>
+              <a href="?lang=en" class="lang-btn">English</a>
+            <% } %>
+          </li>
         </ul>
       </nav>
     </header>

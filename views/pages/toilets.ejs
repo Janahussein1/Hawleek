@@ -1,54 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
-<head> 
+<html lang="<%= locale %>" dir="<%= dir %>">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Hawaleek | Restroom Locator </title>
-    
-    <link rel="stylesheet" href="../../css/toilets.css">
-    
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <title><%= __("nav_restrooms") %> | <%= __("logo_title") %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/toilets.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <style>
+      .lang-switcher a {
+        background: #0f6e56; color: #fff !important;
+        padding: 6px 12px; border-radius: 8px; font-weight: bold;
+        font-size: 0.9rem; transition: background 0.2s ease; text-decoration: none;
+      }
+      .lang-switcher a:hover { background: #115f4f; }
+      [dir="rtl"] .navbar ul { direction: rtl; }
+    </style>
+  <script>
+    window.__translations = <%- translationsJson %>;
+  </script>
 </head>
-<body> 
-    <header> 
+<body>
+    <header>
         <nav class="navbar">
-            <div class="logo"> Hawaleek </div>
-            <ul> 
-                <li> <a href="/"> Home </a></li>
-                <li> <a href="/services"> Directory </a></li>
-                <li> <a href="/booking"> Booking </a></li>
-                <li> <a href="/transport"> Transport </a></li>
-                <li> <a href="/clinics"> Clinics </a></li>
-                <li> <a href="/mosques"> Mosques </a></li>
-                <li> <a href="/toilets" class="active"> Restrooms </a></li>
+            <div class="logo"><%= __("logo_title") %></div>
+            <ul>
+                <li><a href="/" ><%= __("nav_home") %></a></li>
+                <li><a href="/services"><%= __("nav_directory") %></a></li>
+                <li><a href="/booking"><%= __("nav_bookings") %></a></li>
+                <li><a href="/clinics"><%= __("nav_clinics") %></a></li>
+                <li><a href="/transport"><%= __("nav_transport") %></a></li>
+                <li><a href="/mosques"><%= __("nav_mosques") %></a></li>
+                <li><a href="/toilets" class="active"><%= __("nav_restrooms") %></a></li>
+                <li data-show="guest"><a href="/dashboard/login"><%= __("nav_admin") %></a></li>
+                <li data-show="auth" style="display:none"><a href="/dashboard"><%= __("nav_dashboard") %></a></li>
+                <li data-show="auth" style="display:none"><a href="#" onclick="logout();return false;"><%= __("nav_logout") %></a></li>
+                <li class="lang-switcher">
+                  <% if (locale === 'en') { %><a href="?lang=ar">العربية</a><% } else { %><a href="?lang=en">English</a><% } %>
+                </li>
             </ul>
         </nav>
     </header>
 
-    <main> 
+    <main>
         <section class="page-header">
-            <h1> Nearby Public Restrooms </h1>
-            <p> Allow location access to see your live spot, and explore the red dots to find restrooms near you. </p>
+            <h1><%= __("toilet_title") %></h1>
+            <p><%= __("toilet_desc") %></p>
         </section>
 
         <section class="map-layout">
-            <div class="locations-sidebar" id="sidebarList">
-                </div>
-
+            <div class="locations-sidebar" id="sidebarList"></div>
             <div class="map-container">
-                <div id="interactiveMap"></div>
+                <div id="interactiveMap" style="height:500px;"></div>
             </div>
         </section>
     </main>
 
-   <footer>
+    <footer>
         <div class="footer-content">
-            <p>&copy; 2026 Hawaleek Project. All rights reserved.</p>
+            <p>&copy; <%= new Date().getFullYear() %> <%= __("footer_text") %></p>
         </div>
     </footer>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="/public/api.js"></script>
     <script src="/js/toilets.js"></script>
 </body>
 </html>

@@ -1,74 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= locale %>" dir="<%= dir %>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hawaleek | Mosques</title>
-    <link rel="stylesheet" href="/css/mosques.css">
+    <title><%= __("nav_mosques") %> | <%= __("logo_title") %></title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/mosques.css">
+    <style>
+      .lang-switcher a {
+        background: #0f6e56; color: #fff !important;
+        padding: 6px 12px; border-radius: 8px; font-weight: bold;
+        font-size: 0.9rem; transition: background 0.2s ease; text-decoration: none;
+      }
+      .lang-switcher a:hover { background: #115f4f; }
+      [dir="rtl"] .navbar ul { direction: rtl; }
+    </style>
+  <script>
+    window.__translations = <%- translationsJson %>;
+  </script>
 </head>
 <body>
     <header>
         <nav class="navbar">
-            <div class="logo">Hawaleek</div>
+            <div class="logo"><%= __("logo_title") %></div>
             <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/services">Directory</a></li>
-                <li><a href="/booking">Booking</a></li>
-                <li><a href="/transport">Transport</a></li>
-                <li><a href="/clinics">Clinics</a></li>
-                <li><a href="/mosques" class="active">Mosques</a></li>
-                <li><a href="/toilets">Restrooms</a></li>
+                <li><a href="/"><%= __("nav_home") %></a></li>
+                <li><a href="/services"><%= __("nav_directory") %></a></li>
+                <li><a href="/booking"><%= __("nav_bookings") %></a></li>
+                <li><a href="/clinics"><%= __("nav_clinics") %></a></li>
+                <li><a href="/transport"><%= __("nav_transport") %></a></li>
+                <li><a href="/mosques" class="active"><%= __("nav_mosques") %></a></li>
+                <li><a href="/toilets"><%= __("nav_restrooms") %></a></li>
+                <li data-show="guest"><a href="/dashboard/login"><%= __("nav_admin") %></a></li>
+                <li data-show="auth" style="display: none;"><a href="/dashboard"><%= __("nav_dashboard") %></a></li>
+                <li data-show="auth" style="display: none;"><a href="#" onclick="logout(); return false;"><%= __("nav_logout") %></a></li>
+                <li class="lang-switcher">
+                  <% if (locale === 'en') { %><a href="?lang=ar">العربية</a><% } else { %><a href="?lang=en">English</a><% } %>
+                </li>
             </ul>
         </nav>
     </header>
 
     <main>
         <section class="page-header">
-            <h1>Nearby Mosques</h1>
-            <p>Find local mosques, prayer times, and facilities.</p>
+            <h1><%= __("mosque_title") %></h1>
+            <p><%= __("mosque_desc") %></p>
         </section>
 
         <section class="directory-layout">
             <div class="services-wrapper">
-                
                 <article class="card">
                     <img src="/photos/mosque.jpg" alt="Al-Rahman Mosque">
                     <div class="cards-content">
-                        <span class="status-tag">Open Now</span>
+                        <span class="status-tag"><%= __("mosque_open_now") %></span>
                         <h3>Al-Rahman Mosque</h3>
                         <p>Main Street, 5 mins walk from Dokki Square.</p>
                         <p>Walk south on Dokki Street, then left onto Main Street and continue 350m to the mosque entrance.</p>
-                        <a href="https://www.google.com/maps/dir/?api=1&destination=30.0384,31.2114&travelmode=walking" target="_blank" rel="noreferrer" class="book-link">Open Route</a>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=30.0384,31.2114&travelmode=walking" target="_blank" rel="noreferrer" class="book-link"><%= __("mosque_route") %></a>
                     </div>
                 </article>
 
                 <article class="card">
                     <img src="/photos/mosque2.jpg" alt="Al-Nour Mosque">
                     <div class="cards-content">
-                        <span class="status-tag">Friday Prayers</span>
+                        <span class="status-tag"><%= __("mosque_friday") %></span>
                         <h3>Al-Nour Mosque</h3>
                         <p>West District, has women's prayer area.</p>
                         <p>Head north on West Avenue, turn right at Market Street and walk 600m to the mosque.</p>
-                        <a href="https://www.google.com/maps/dir/?api=1&destination=30.0396,31.2008&travelmode=walking" target="_blank" rel="noreferrer" class="book-link">Open Route</a>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=30.0396,31.2008&travelmode=walking" target="_blank" rel="noreferrer" class="book-link"><%= __("mosque_route") %></a>
                     </div>
                 </article>
-
             </div>
         </section>
     </main>
 
     <footer>
         <div class="footer-content">
-            <p>&copy; 2026 Hawaleek Project. All rights reserved.</p>
+            <p>&copy; <%= new Date().getFullYear() %> <%= __("footer_text") %></p>
             <ul class="footer-links">
-                <li><a href="#">Privacy Policy</a></li>
-                <li><a href="#">Terms Of Service</a></li>
-                <li><a href="#">Contact Us</a></li>
+                <li><a href="#"><%= __("footer_privacy") %></a></li>
+                <li><a href="#"><%= __("footer_terms") %></a></li>
+                <li><a href="#"><%= __("contact_title") %></a></li>
             </ul>
         </div>
     </footer>
 
+    <script src="/public/api.js"></script>
     <script src="/js/mosques.js"></script>
 </body>
 </html>
