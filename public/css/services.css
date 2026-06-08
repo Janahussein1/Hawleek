@@ -11,7 +11,8 @@
   margin-bottom: 10px;
   color: var(--secondary);
 }
-──────────────────────────────────────────────────────────────────────── */
+}
+/* ──────────────────────────────────────────────────────────────────────── */
 main {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -40,6 +41,8 @@ main > .page-header {
   display: flex;
   flex-direction: column;
   height: 100%;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 .service-category:hover {

@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (currentCenter) {
         try {
           // Increase radius to 5000m to ensure we find places
-          const query = `[out:json][timeout:15];(node["amenity"="fuel"](around:5000,${currentCenter.lat},${currentCenter.lng});node["shop"="mall"](around:5000,${currentCenter.lat},${currentCenter.lng});way["shop"="mall"](around:5000,${currentCenter.lat},${currentCenter.lng}););out center;`;
+          const query = `[out:json][timeout:15];(node["amenity"="toilets"](around:5000,${currentCenter.lat},${currentCenter.lng});node["amenity"="fuel"](around:5000,${currentCenter.lat},${currentCenter.lng});node["shop"="mall"](around:5000,${currentCenter.lat},${currentCenter.lng});way["shop"="mall"](around:5000,${currentCenter.lat},${currentCenter.lng}););out center;`;
           const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
           
           const response = await fetch(url);
@@ -94,7 +94,8 @@ document.addEventListener("DOMContentLoaded", () => {
               data.elements.forEach((el, index) => {
                 const tags = el.tags || {};
                 const isFuel = tags.amenity === 'fuel';
-                const name = tags.name || (isFuel ? t('toilet_petrol_station', 'Petrol Station') : t('toilet_shopping_mall', 'Shopping Mall'));
+                const isToilet = tags.amenity === 'toilets';
+                const name = tags.name || (isToilet ? t('toilet_public', 'Public Restroom') : (isFuel ? t('toilet_petrol_station', 'Petrol Station') : t('toilet_shopping_mall', 'Shopping Mall')));
                 const itemLat = el.lat || el.center?.lat;
                 const itemLng = el.lon || el.center?.lon;
                 if (!itemLat || !itemLng) return;
@@ -105,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   type: 'toilet',
                   address: tags['addr:street'] ? `${tags['addr:street']} ${tags['addr:housenumber'] || ''}` : (isFuel ? t('toilet_petrol_station', 'Petrol Station') : t('toilet_shopping_area', 'Shopping Area')),
                   openingHours: tags.opening_hours || (isFuel ? t('toilet_open_24h', 'Open 24 Hours') : t('toilet_mall_hours', '10:00 AM - 11:00 PM')),
-                  description: isFuel ? t('toilet_desc_fuel2', 'Restrooms inside fuel station.') : t('toilet_desc_mall', 'Public restrooms inside the shopping mall.'),
+                  description: isToilet ? t('toilet_desc_public', 'Public Restroom.') : (isFuel ? t('toilet_desc_fuel2', 'Restrooms inside fuel station.') : t('toilet_desc_mall', 'Public restrooms inside the shopping mall.')),
                   neighborhood: tags['addr:suburb'] || tags['addr:city'] || (isFuel ? t('toilet_fuel_station', 'Fuel Station') : t('toilet_mall', 'Mall')),
                   location: { lat: itemLat, lng: itemLng }
                 });
@@ -124,19 +125,21 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-        // If we have user coordinates, filter toilets within 5km radius and sort by distance
-        if (userCoords) {
+        // Filter toilets within 5km radius from the current center
+        if (currentCenter) {
           const maxDist = 5; // km
           toilets = toilets.filter(t => {
             const lat = t.location?.lat;
             const lng = t.location?.lng;
             if (!lat || !lng) return false;
-            const dist = calculateDistance(userCoords.lat, userCoords.lng, lat, lng);
+            const dist = calculateDistance(currentCenter.lat, currentCenter.lng, lat, lng);
             return dist <= maxDist;
           }).map(t => {
             const lat = t.location.lat;
             const lng = t.location.lng;
-            t._distance = calculateDistance(userCoords.lat, userCoords.lng, lat, lng);
+            // Always show distance relative to user if available, otherwise relative to center
+            const refCoords = userCoords ? userCoords : currentCenter;
+            t._distance = calculateDistance(refCoords.lat, refCoords.lng, lat, lng);
             return t;
           }).sort((a, b) => a._distance - b._distance);
         }

@@ -1,0 +1,130 @@
+<!DOCTYPE html> 
+<html lang="<%= locale %>" dir="<%= dir %>"> 
+<head> 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= __("logo_title") %> | <%= __("nav_directory") %></title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .lang-switcher a {
+      background: #0f6e56;
+      color: #fff !important;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      transition: background 0.2s ease;
+    }
+    .lang-switcher a:hover {
+      background: #115f4f;
+    }
+    [dir="rtl"] .navbar ul {
+      direction: rtl;
+    }
+  </style>
+  <script>
+    window.__translations = <%- translationsJson %>;
+  </script>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <nav class="navbar">
+      <div class="logo">🏘️ <%= __("logo_title") %></div>
+      <ul>
+        <li><a href="/" class="active"><%= __("nav_home") %></a></li>
+        <li><a href="/services"><%= __("nav_directory") %></a></li>
+        <li><a href="/booking"><%= __("nav_restaurants") %></a></li>
+        <li><a href="/clinics"><%= __("nav_clinics") %></a></li>
+        <li><a href="/transport"><%= __("nav_transport") %></a></li>
+        <li><a href="/mosques"><%= __("nav_mosques") %></a></li>
+        <li><a href="/toilets"><%= __("nav_restrooms") %></a></li>
+        <li data-show="guest"><a href="/dashboard/login"><%= __("nav_admin") %></a></li>
+        <li data-show="auth" style="display: none;"><a href="/dashboard"><%= __("nav_dashboard") %></a></li>
+        <li data-show="auth" style="display: none;"><a href="#" onclick="logout(); return false;"><%= __("nav_logout") %></a></li>
+        <li class="lang-switcher">
+          <% if (locale === 'en') { %>
+            <a href="?lang=ar" class="lang-btn">العربية</a>
+          <% } else { %>
+            <a href="?lang=en" class="lang-btn">English</a>
+          <% } %>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section id="hero">
+      <h1><%= __("hero_title") %></h1>
+      <p><%= __("hero_desc") %></p>
+      <div class="hero-actions">
+        <a href="/booking" class="primary-btn"><%= __("hero_reserve_table") %></a>
+        <a href="/clinics" class="secondary-btn"><%= __("hero_book_clinic") %></a>
+        <a href="/transport" class="secondary-btn"><%= __("hero_find_transport") %></a>
+      </div>
+    </section>
+
+    <!-- Search Section -->
+    <section id="search" class="search-container">
+      <h2><%= __("search_title") %></h2>
+      <form id="searchform">
+        <input type="text" id="searchQuery" name="searchQuery" placeholder="<%= __("search_placeholder") %>">
+        <select id="category">
+          <option value="all"><%= __("search_all_categories") %></option>
+          <option value="restaurant"><%= __("search_restaurants_opt") %></option>
+          <option value="clinic"><%= __("search_clinics_opt") %></option>
+          <option value="transport"><%= __("search_transport_opt") %></option>
+          <option value="toilet"><%= __("search_restrooms_opt") %></option>
+          <option value="service"><%= __("search_services_opt") %></option>
+        </select>
+        <button type="submit" class="primary-btn"><%= __("search_btn") %></button>
+      </form>
+      <div id="search-results" class="services-wrapper"></div>
+    </section>
+
+    <!-- About & Contact Section -->
+    <section id="about" class="about-section">
+      <div class="about-grid">
+        <div class="about-text">
+          <h2><%= __("about_title") %></h2>
+          <p><%= __("about_desc") %></p>
+          <h3><%= __("about_why_us") %></h3>
+          <ul>
+            <li><%= __("about_point1") %></li>
+            <li><%= __("about_point2") %></li>
+            <li><%= __("about_point3") %></li>
+          </ul>
+        </div>
+        
+        <div class="contact-card">
+          <h3><%= __("contact_title") %></h3>
+          <p><%= __("contact_subtitle") %></p>
+          <form id="contact-form">
+            <input type="text" id="contact-name" placeholder="<%= __("contact_name_placeholder") %>" required>
+            <input type="email" id="contact-email" placeholder="<%= __("contact_email_placeholder") %>" required>
+            <textarea id="contact-message" placeholder="<%= __("contact_message_placeholder") %>" required></textarea>
+            <button type="submit" class="primary-btn"><%= __("contact_send_btn") %></button>
+          </form>
+          <p id="contact-result"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <p>© <%= new Date().getFullYear() %> <%= __("footer_text") %></p>
+      <ul class="footer-links">
+        <li><a href="/booking"><%= __("nav_restaurants") %></a></li>
+        <li><a href="/clinics"><%= __("nav_clinics") %></a></li>
+        <li><a href="/transport"><%= __("nav_transport") %></a></li>
+        <li><a href="/dashboard/login"><%= __("footer_admin_dash") %></a></li>
+      </ul>
+    </footer>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/home.js"></script>
+</body>
+</html>

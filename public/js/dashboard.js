@@ -127,7 +127,7 @@ async function loadProfile() {
     set('profile-neighborhood', u.neighborhood);
 
     const avatar = document.getElementById('profile-avatar');
-    if (avatar && u.avatar) avatar.src = `http://localhost:5000${u.avatar}`;
+    if (avatar && u.avatar) avatar.src = `${u.avatar}`;
   } catch (err) {
     showToast('Could not load profile', 'error');
   }
@@ -161,7 +161,7 @@ async function loadProfile() {
       try {
         const data   = await API.upload('/users/avatar', formData, 'PUT');
         const avatar = document.getElementById('profile-avatar');
-        if (avatar) avatar.src = `http://localhost:5000${data.data.avatar}`;
+        if (avatar) avatar.src = `${data.data.avatar}`;
         showToast('Avatar updated!');
       } catch (err) {
         showToast(err.message, 'error');

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="<%= locale %>" dir="<%= dir %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Request Service | Hawleek</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/serviceRequest.css">
+  <style>
+    .lang-switcher a {
+      background: #0f6e56; color: #fff !important;
+      padding: 6px 12px; border-radius: 8px; font-weight: bold;
+      font-size: 0.9rem; transition: background 0.2s ease; text-decoration: none;
+    }
+    .lang-switcher a:hover { background: #115f4f; }
+    [dir="rtl"] .navbar ul { direction: rtl; }
+  </style>
+  <script>
+    window.__translations = <%- translationsJson || '{}' %>;
+  </script>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <nav class="navbar">
+      <div class="logo">🏘️ Hawleek</div>
+      <ul>
+        <li><a href="/"><%= __("nav_home") %></a></li>
+        <li><a href="/services" class="active"><%= __("nav_directory") %></a></li>
+        <li><a href="/booking"><%= __("nav_restaurants") %></a></li>
+        <li><a href="/clinics"><%= __("nav_clinics") %></a></li>
+        <li><a href="/transport"><%= __("nav_transport") %></a></li>
+        <li><a href="/mosques"><%= __("nav_mosques") %></a></li>
+        <li><a href="/toilets"><%= __("nav_restrooms") %></a></li>
+        <li data-show="guest"><a href="/dashboard/login"><%= __("nav_admin") %></a></li>
+        <li data-show="auth" style="display: none;"><a href="/dashboard"><%= __("nav_dashboard") %></a></li>
+        <li data-show="auth" style="display: none;"><a href="#" onclick="logout(); return false;"><%= __("nav_logout") %></a></li>
+        <li class="lang-switcher">
+          <% if (locale === 'en') { %><a href="?lang=ar">العربية</a><% } else { %><a href="?lang=en">English</a><% } %>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="page-shell">
+    <div id="toast-container"></div>
+
+    <div class="page-header">
+      <div>
+        <div class="eyebrow">Sayed Electric & Plumbing</div>
+        <h1>Request Home Maintenance</h1>
+        <p class="page-intro">
+          Professional and reliable home repairs delivered right to your door. 
+          Fill out the form below to schedule a visit from our trusted local technicians.
+        </p>
+      </div>
+    </div>
+
+    <div class="service-cards-grid">
+      <div class="service-info-card">
+        <div style="font-size: 3rem; text-align: center; padding: 20px; background: var(--secondary-light);">👨‍🔧</div>
+        <h3>Expert Technicians</h3>
+        <p>Our professionals are certified and experienced in handling a wide range of electrical and plumbing issues safely and efficiently.</p>
+      </div>
+      <div class="service-info-card">
+        <div style="font-size: 3rem; text-align: center; padding: 20px; background: var(--secondary-light);">⏱️</div>
+        <h3>Fast Response</h3>
+        <p>We pride ourselves on prompt service. For emergencies, we aim to be at your doorstep within 60 minutes anywhere in the neighborhood.</p>
+      </div>
+      <div class="service-info-card">
+        <div style="font-size: 3rem; text-align: center; padding: 20px; background: var(--secondary-light);">💳</div>
+        <h3>Transparent Pricing</h3>
+        <p>No hidden fees. We provide a clear estimate before any work begins, ensuring you know exactly what to expect.</p>
+      </div>
+    </div>
+
+    <div class="request-card">
+      <div class="request-header">
+        <h2>Service Request Form</h2>
+        <p class="subtitle">Tell us what you need help with and when you'd like us to visit.</p>
+      </div>
+
+      <form id="service-request-form">
+        <div class="form-grid">
+          <div>
+            <label for="sr-name">Full Name *</label>
+            <input type="text" id="sr-name" required placeholder="John Doe">
+          </div>
+          <div>
+            <label for="sr-email">Email Address *</label>
+            <input type="email" id="sr-email" required placeholder="john@example.com">
+          </div>
+          <div>
+            <label for="sr-phone">Phone Number *</label>
+            <input type="text" id="sr-phone" required placeholder="01012345678">
+          </div>
+          <div>
+            <label for="sr-address">Full Address *</label>
+            <input type="text" id="sr-address" required placeholder="Building 5, Street 10, Apartment 12">
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <label>Service Type *</label>
+          <div class="type-bar">
+            <input type="radio" name="sr-service-type" id="type-electrical" value="electrical" checked>
+            <label for="type-electrical">⚡ Electrical</label>
+            
+            <input type="radio" name="sr-service-type" id="type-plumbing" value="plumbing">
+            <label for="type-plumbing">🔧 Plumbing</label>
+
+            <input type="radio" name="sr-service-type" id="type-ac" value="ac-repair">
+            <label for="type-ac">❄️ AC Repair</label>
+
+            <input type="radio" name="sr-service-type" id="type-painting" value="painting">
+            <label for="type-painting">🎨 Painting</label>
+
+            <input type="radio" name="sr-service-type" id="type-carpentry" value="carpentry">
+            <label for="type-carpentry">🪚 Carpentry</label>
+
+            <input type="radio" name="sr-service-type" id="type-general" value="general">
+            <label for="type-general">🏠 General</label>
+
+            <input type="radio" name="sr-service-type" id="type-emergency" value="emergency">
+            <label for="type-emergency">🚨 Emergency</label>
+          </div>
+        </div>
+
+        <div class="form-grid" style="margin-top: 24px;">
+          <div>
+            <label for="sr-date">Preferred Date *</label>
+            <input type="date" id="sr-date" required>
+          </div>
+          <div>
+            <label>Preferred Time Slot *</label>
+            <div class="type-bar">
+              <input type="radio" name="sr-time-slot" id="time-morning" value="morning" checked>
+              <label for="time-morning">Morning</label>
+              
+              <input type="radio" name="sr-time-slot" id="time-afternoon" value="afternoon">
+              <label for="time-afternoon">Afternoon</label>
+              
+              <input type="radio" name="sr-time-slot" id="time-evening" value="evening">
+              <label for="time-evening">Evening</label>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <label for="sr-description">Issue Description *</label>
+          <textarea id="sr-description" rows="4" required placeholder="Please describe the problem you're experiencing..."></textarea>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <label for="sr-notes">Additional Notes (Optional)</label>
+          <textarea id="sr-notes" rows="2" placeholder="Any special instructions for finding your address or entering the building..."></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" id="sr-submit-btn" class="primary-btn">Submit Request</button>
+        </div>
+
+        <p class="help-text">
+          ✅ A technician will contact you shortly to confirm the appointment and provide a cost estimate.
+        </p>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content" style="max-width: 1120px; margin: 0 auto; padding: 20px;">
+      <p>&copy; <%= new Date().getFullYear() %> Hawleek Project</p>
+    </div>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/serviceRequest.js"></script>
+</body>
+</html>

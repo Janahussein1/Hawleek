@@ -4,6 +4,17 @@ const { sendEmail } = require('../utils/email');
 exports.sendContact = async (req, res, next) => {
   const { name, email, message } = req.body;
 
+  // ── Name Validation ──
+  const trimmedName = name ? name.trim() : '';
+  const nameRegex = /^[a-zA-Z\s'-]+$/;
+
+  if (!trimmedName) {
+    return next(new AppError('Please provide your name.', 400));
+  }
+  if (!nameRegex.test(trimmedName)) {
+    return next(new AppError('Name can only contain letters, spaces, hyphens, or apostrophes.', 400));
+  }
+
   const rawSiteEmail = process.env.CONTACT_EMAIL || process.env.EMAIL_USER || 'hawleekservice@gmail.com';
   const siteEmail = rawSiteEmail.match(/<([^>]+)>/)?.[1] || rawSiteEmail;
 
@@ -38,7 +49,7 @@ exports.sendContact = async (req, res, next) => {
                 style="background:#f8fffe;border:2px solid #e0f5ee;border-radius:12px;">
                 <tr><td style="padding:24px;">
                   <p style="margin:0 0 6px;font-size:13px;color:#888;font-weight:600;">From</p>
-                  <p style="margin:0 0 16px;font-size:15px;color:#1a1a1a;font-weight:600;">${name} &lt;${email}&gt;</p>
+                  <p style="margin:0 0 16px;font-size:15px;color:#1a1a1a;font-weight:600;">${trimmedName} &lt;${email}&gt;</p>
                   <p style="margin:0 0 6px;font-size:13px;color:#888;font-weight:600;">Message</p>
                   <p style="margin:0;font-size:14px;color:#333;line-height:1.7;white-space:pre-line;">${message}</p>
                 </td></tr>
@@ -91,7 +102,7 @@ exports.sendContact = async (req, res, next) => {
                 ${isServiceRequest ? '🔧 Service Request Received!' : '📬 Message Received!'}
               </h2>
               <p style="margin:0 0 20px;color:#555;font-size:15px;line-height:1.6;">
-                Hi <strong>${name}</strong>,
+                Hi <strong>${trimmedName}</strong>,
                 ${isServiceRequest
                   ? 'thank you for submitting a service request through Hawleek. Our technician team has been notified and will contact you within <strong>24 hours</strong> to schedule your appointment.'
                   : 'thank you for reaching out to us. We have received your message and our team will get back to you shortly.'}
@@ -140,7 +151,7 @@ exports.sendContact = async (req, res, next) => {
   try {
     await sendEmail({
       to: siteEmail,
-      subject: isServiceRequest ? `🔧 Service Request: ${name}` : `📬 Contact form: ${name}`,
+      subject: isServiceRequest ? `🔧 Service Request: ${trimmedName}` : `📬 Contact form: ${trimmedName}`,
       html: adminHtml,
       replyTo: email,
     });

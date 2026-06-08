@@ -27,11 +27,8 @@ const app = express();
 app.set('trust proxy', 1);
 
 app.set('view engine', 'ejs');
-app.set('views', [path.join(__dirname, 'main'), path.join(__dirname, 'views')]); // Ensure this path matches your folder structure
-app.use('/css', express.static(path.join(__dirname, 'css')));
-app.use('/js', express.static(path.join(__dirname, 'js')));
-app.use('/photos', express.static(path.join(__dirname, 'photos')));
-app.use('/public', express.static(path.join(__dirname, 'public')));
+app.set('views', path.join(__dirname, 'views'));
+app.use(express.static(path.join(__dirname, 'public')));
 
  
 const globalLimiter = rateLimit({
@@ -122,15 +119,14 @@ app.get('/', (req, res) => {
 
 // Dashboard routes (render EJS templates)
 app.get('/dashboard', (req, res) => {
-    res.render('dashboard');
+    res.render('pages/dashboard');
 });
-
 
 app.get('/dashboard/login', (req, res) => {
-  res.render('login');
+  res.render('pages/login');
 });
 app.get('/dashboard/login.ejs', (req, res) => {
-  res.render('login');
+  res.render('pages/login');
 });
 
  

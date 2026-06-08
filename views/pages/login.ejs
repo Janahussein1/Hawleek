@@ -3,27 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/login.css">
     <title>Admin Login</title>
 </head>
 <body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <a href="/" class="logo-link">Hawleek</a>
+                <h1>Admin Portal Login</h1>
+                <p>Please enter your credentials to access the dashboard</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="adminUser">Username</label>
+                    <input type="text" id="adminUser" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="adminPass">Password</label>
+                    <input type="password" id="adminPass" required>
+                </div>
+                
+                <button type="submit" class="submit-btn">Login</button>
+            </form>
+            
+            <div class="login-footer">
+                <p>Back to <a href="/" class="accent-text">Home</a></p>
+            </div>
+        </div>
+    </div>
 
-    <hr>
-    <h1>Admin Portal Login</h1>
-    <hr>
-
-    <form id="adminLoginForm">
-        <label>Username: 
-            <input type="text" id="adminUser" required>
-        </label><br><br>
-        
-        <label>Password: 
-            <input type="password" id="adminPass" required>
-        </label><br><br>
-        
-        <button type="submit">Login</button>
-    </form>
-
-<script src="/js/login.js"></script>
+    <script src="/js/login.js"></script>
 </body>
 </html>

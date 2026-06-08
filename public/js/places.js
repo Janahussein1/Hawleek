@@ -7,7 +7,6 @@ let currentFilters = {};
 document.addEventListener('DOMContentLoaded', () => {
   loadNeighborhoods();
   loadPlaces();
-  loadWeather();
 
   const searchForm = document.getElementById('search-form');
   if (searchForm) {
@@ -77,12 +76,12 @@ function renderPlaceCard(place) {
   const stars = '★'.repeat(Math.round(place.averageRating)) + '☆'.repeat(5 - Math.round(place.averageRating));
   const verified = place.isVerified ? '<span style="color:#22c55e;font-size:12px">✓ Verified</span>' : '';
   const img = place.coverImage
-    ? `http://localhost:5000${place.coverImage}`
+    ? `${place.coverImage}`
     : 'https://via.placeholder.com/300x180?text=No+Image';
 
   return `
-    <div class="place-card" onclick="window.location.href='/Homepage /place-detail.html?id=${place._id}'"
-      style="cursor:pointer;border:1px solid #eee;border-radius:12px;overflow:hidden;
+    <div class="place-card" 
+      style="cursor:default;border:1px solid #eee;border-radius:12px;overflow:hidden;
              transition:transform 0.2s,box-shadow 0.2s;"
       onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'"
       onmouseout="this.style.transform='';this.style.boxShadow=''">
@@ -169,7 +168,7 @@ async function loadPlaceDetail() {
     const reviews = reviewData.data;
 
     const img = p.coverImage
-      ? `http://localhost:5000${p.coverImage}`
+      ? `${p.coverImage}`
       : 'https://via.placeholder.com/800x300?text=' + encodeURIComponent(p.name);
 
     if (container) {

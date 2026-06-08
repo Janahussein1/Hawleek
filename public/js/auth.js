@@ -28,9 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         setTimeout(() => {
           if (data.user.role === 'admin') {
-            window.location.href = '/dashboard/admin.html';
+            window.location.href = '/dashboard';
           } else if (data.user.role === 'business_owner') {
-            window.location.href = '/dashboard/owner.html';
+            window.location.href = '/dashboard';
           } else {
             window.location.href = '/';
           }
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setTimeout(() => {
           if (data.user.role === 'business_owner') {
-            window.location.href = '/dashboard/owner.html';
+            window.location.href = '/dashboard';
           } else {
             window.location.href = '/';
           }

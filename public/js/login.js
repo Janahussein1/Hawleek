@@ -41,24 +41,47 @@ document.addEventListener('DOMContentLoaded', () => {
         modalOverlay.style.display = 'none';
     });
 
-    const loginForm = document.getElementById('adminLoginForm');
+    const loginForm = document.getElementById('loginForm');
 
     if (loginForm) {
         loginForm.setAttribute('novalidate', 'true');
 
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const userInput = document.getElementById('adminUser').value.trim();
             const passInput = document.getElementById('adminPass').value.trim();
 
-            if (userInput !== 'admin' || passInput !== 'adminpass12') {
-                modalText.innerHTML = "<b>❌ Invalid Credentials:</b> The username or password you entered is incorrect.";
+            if (!userInput || !passInput) {
+                modalText.innerHTML = "<b>❌ Missing Fields:</b> Please enter both email and password.";
                 modalOverlay.style.display = 'flex';
                 return;
             }
 
-            window.location.href = 'dashboard.html';
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: userInput, password: passInput })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    if (typeof setAuth === 'function') {
+                        setAuth(data.token, data.user);
+                    } else {
+                        localStorage.setItem('hawleek_token', data.token);
+                        localStorage.setItem('hawleek_user', JSON.stringify(data.user));
+                    }
+                    window.location.href = '/dashboard';
+                } else {
+                    modalText.innerHTML = `<b>❌ Login Failed:</b> ${data.message || 'Invalid credentials'}`;
+                    modalOverlay.style.display = 'flex';
+                }
+            } catch (err) {
+                modalText.innerHTML = `<b>❌ Connection Error:</b> Could not connect to the server.`;
+                modalOverlay.style.display = 'flex';
+            }
         });
     }
 });
