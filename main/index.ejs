@@ -1,89 +1,131 @@
 <!DOCTYPE html> 
-<html lang="en"> 
+<html lang="<%= locale %>" dir="<%= dir %>"> 
 <head> 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Hawaleek | Home </title>
-    <link rel="stylesheet" href="/css/style.css">
-    
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= __("logo_title") %> | <%= __("nav_directory") %></title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .lang-switcher a {
+      background: #0f6e56;
+      color: #fff !important;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      transition: background 0.2s ease;
+    }
+    .lang-switcher a:hover {
+      background: #115f4f;
+    }
+    [dir="rtl"] .navbar ul {
+      direction: rtl;
+    }
+  </style>
+  <script>
+    window.__translations = <%- translationsJson %>;
+  </script>
 </head>
 <body>
-    <header>
-        <nav class="navbar">
-            <div class="logo"> Hawaleek </div>
-            <ul>
-                <li> <a href="/" class="active"> Home </a></li>
-                <li> <a href="/booking"> Restaurants </a> </li>
-                <li> <a href="/clinics"> Clinics </a></li>
-                <li> <a href="/transport"> Transport </a></li>
-                <li> <a href="/dashboard/login"> Admin </a></li>
-            </ul>
-        </nav>
-    </header>
+  <!-- Header -->
+  <header>
+    <nav class="navbar">
+      <div class="logo">🏘️ <%= __("logo_title") %></div>
+      <ul>
+        <li><a href="/" class="active"><%= __("nav_home") %></a></li>
+        <li><a href="/services"><%= __("nav_directory") %></a></li>
+        <li><a href="/booking"><%= __("nav_restaurants") %></a></li>
+        <li><a href="/clinics"><%= __("nav_clinics") %></a></li>
+        <li><a href="/transport"><%= __("nav_transport") %></a></li>
+        <li><a href="/mosques"><%= __("nav_mosques") %></a></li>
+        <li><a href="/toilets"><%= __("nav_restrooms") %></a></li>
+        <li data-show="guest"><a href="/dashboard/login"><%= __("nav_admin") %></a></li>
+        <li data-show="auth" style="display: none;"><a href="/dashboard"><%= __("nav_dashboard") %></a></li>
+        <li data-show="auth" style="display: none;"><a href="#" onclick="logout(); return false;"><%= __("nav_logout") %></a></li>
+        <li class="lang-switcher">
+          <% if (locale === 'en') { %>
+            <a href="?lang=ar" class="lang-btn">العربية</a>
+          <% } else { %>
+            <a href="?lang=en" class="lang-btn">English</a>
+          <% } %>
+        </li>
+      </ul>
+    </nav>
+  </header>
 
-    <main>
-        <section id="hero" style="padding:48px 24px;text-align:center;background:linear-gradient(180deg,#f8fffe,white);">
-            <h1 style="font-size:2.4rem;margin-bottom:12px;">Hawaleek — Your Neighborhood, Connected</h1>
-            <p style="max-width:900px;margin:0 auto 18px;color:#374151;line-height:1.6;">Discover trusted businesses nearby, reserve tables at local restaurants, book medical appointments, and find transport — all in one place. Fast, local, and designed for your community.</p>
-            <div style="margin-top:18px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-                <a href="/booking" class="primary-btn">Reserve a Table</a>
-                <a href="/clinics" class="secondary-btn">Book a Clinic</a>
-                <a href="/transport" class="secondary-btn">Find Transport</a>
-            </div>
-        </section>
+  <main>
+    <!-- Hero Section -->
+    <section id="hero">
+      <h1><%= __("hero_title") %></h1>
+      <p><%= __("hero_desc") %></p>
+      <div class="hero-actions">
+        <a href="/booking" class="primary-btn"><%= __("hero_reserve_table") %></a>
+        <a href="/clinics" class="secondary-btn"><%= __("hero_book_clinic") %></a>
+        <a href="/transport" class="secondary-btn"><%= __("hero_find_transport") %></a>
+      </div>
+      <div id="weather-info" class="weather-info"></div>
+    </section>
 
-        <section id="search" style="padding:36px 24px;max-width:1120px;margin:0 auto;">
-            <h2 style="margin-top:0">Find what you need</h2>
-            <form id="searchform" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-                <input type="text" id="searchQuery" name="searchQuery" placeholder="Search for a restaurant, clinic, or service..." style="flex:1;min-width:220px;padding:10px;border-radius:8px;border:1px solid #d1d5db">
-                <select id="category" style="padding:10px;border-radius:8px;border:1px solid #d1d5db">
-                    <option value="all">All Categories</option>
-                    <option value="restaurant">Restaurants</option>
-                    <option value="clinic">Clinics</option>
-                    <option value="transport">Transport</option>
-                    <option value="toilet">Restrooms</option>
-                    <option value="service">Services</option>
-                </select>
-                <button type="submit" class="primary-btn">Search</button>
-            </form>
-            <div id="search-results" style="margin-top:18px"></div>
-        </section>
+    <!-- Search Section -->
+    <section id="search" class="search-container">
+      <h2><%= __("search_title") %></h2>
+      <form id="searchform">
+        <input type="text" id="searchQuery" name="searchQuery" placeholder="<%= __("search_placeholder") %>">
+        <select id="category">
+          <option value="all"><%= __("search_all_categories") %></option>
+          <option value="restaurant"><%= __("search_restaurants_opt") %></option>
+          <option value="clinic"><%= __("search_clinics_opt") %></option>
+          <option value="transport"><%= __("search_transport_opt") %></option>
+          <option value="toilet"><%= __("search_restrooms_opt") %></option>
+          <option value="service"><%= __("search_services_opt") %></option>
+        </select>
+        <button type="submit" class="primary-btn"><%= __("search_btn") %></button>
+      </form>
+      <div id="search-results" class="services-wrapper"></div>
+    </section>
 
-        <section id="about" style="padding:48px 24px;background:#ffffff;">
-            <div style="max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 360px;gap:28px;align-items:start">
-                <div>
-                    <h2>About Hawaleek</h2>
-                    <p style="color:#374151;line-height:1.7">Hawaleek connects neighbors with reliable local businesses and services. We make it easy to discover nearby restaurants, schedule healthcare appointments, and navigate local transport. Our mission is to help communities thrive by making essential local resources discoverable and bookable.</p>
-                    <h3 style="margin-top:18px">Why choose us</h3>
-                    <ul style="color:#374151;line-height:1.7">
-                        <li>Curated local listings vetted for quality.</li>
-                        <li>Fast, simple booking with email confirmations.</li>
-                        <li>Privacy-conscious and community-focused.</li>
-                    </ul>
-                </div>
-                <div style="background:#f8fffe;border:1px solid #e6fffa;padding:18px;border-radius:12px">
-                    <h3>Contact</h3>
-                    <p style="margin:0 0 12px;color:#374151">Have a question or want to partner with us? Send a message and we'll reply soon.</p>
-                    <form id="contact-form">
-                        <input type="text" id="contact-name" placeholder="Your name" required style="width:100%;padding:10px;border-radius:8px;border:1px solid #d1d5db;margin-bottom:8px">
-                        <input type="email" id="contact-email" placeholder="Your email" required style="width:100%;padding:10px;border-radius:8px;border:1px solid #d1d5db;margin-bottom:8px">
-                        <textarea id="contact-message" placeholder="Message" required style="width:100%;padding:10px;border-radius:8px;border:1px solid #d1d5db;margin-bottom:8px;min-height:120px"></textarea>
-                        <button type="submit" class="primary-btn">Send Message</button>
-                    </form>
-                    <p id="contact-result" style="margin-top:10px;color:#374151"></p>
-                </div>
-            </div>
-        </section>
+    <!-- About & Contact Section -->
+    <section id="about" class="about-section">
+      <div class="about-grid">
+        <div class="about-text">
+          <h2><%= __("about_title") %></h2>
+          <p><%= __("about_desc") %></p>
+          <h3><%= __("about_why_us") %></h3>
+          <ul>
+            <li><%= __("about_point1") %></li>
+            <li><%= __("about_point2") %></li>
+            <li><%= __("about_point3") %></li>
+          </ul>
+        </div>
+        
+        <div class="contact-card">
+          <h3><%= __("contact_title") %></h3>
+          <p><%= __("contact_subtitle") %></p>
+          <form id="contact-form">
+            <input type="text" id="contact-name" placeholder="<%= __("contact_name_placeholder") %>" required>
+            <input type="email" id="contact-email" placeholder="<%= __("contact_email_placeholder") %>" required>
+            <textarea id="contact-message" placeholder="<%= __("contact_message_placeholder") %>" required></textarea>
+            <button type="submit" class="primary-btn"><%= __("contact_send_btn") %></button>
+          </form>
+          <p id="contact-result"></p>
+        </div>
+      </div>
+    </section>
 
-        <footer style="padding:28px 24px;text-align:center;color:#6b7280">
-            <div style="max-width:900px;margin:0 auto">
-                <p style="margin:0">© ${new Date().getFullYear()} Hawaleek · Your Neighborhood Guide</p>
-            </div>
-        </footer>
+    <!-- Footer -->
+    <footer>
+      <p>© <%= new Date().getFullYear() %> <%= __("footer_text") %></p>
+      <ul class="footer-links">
+        <li><a href="/booking"><%= __("nav_restaurants") %></a></li>
+        <li><a href="/clinics"><%= __("nav_clinics") %></a></li>
+        <li><a href="/transport"><%= __("nav_transport") %></a></li>
+        <li><a href="/dashboard/login"><%= __("footer_admin_dash") %></a></li>
+      </ul>
+    </footer>
+  </main>
 
-    </main>
-
-    <script src="/public/api.js"></script>
-    <script src="/js/home.js"></script>
+  <script src="/public/api.js"></script>
+  <script src="/js/home.js"></script>
 </body>
 </html>
