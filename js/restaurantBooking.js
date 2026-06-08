@@ -12,14 +12,14 @@ async function loadRestaurants() {
   const container = document.getElementById('restaurant-list');
   if (!container) return;
 
-  container.innerHTML = '<p class="loading-message">Loading local restaurants &hellip;</p>';
+  container.innerHTML = '<p class="loading-message">' + t('rest_loading', 'Loading local restaurants &hellip;') + '</p>';
 
   try {
     const data = await API.get('/places?type=restaurant&limit=50');
     const restaurants = Array.isArray(data.data) ? data.data : [];
 
     if (restaurants.length === 0) {
-      container.innerHTML = '<p class="notice">No restaurant reservations are available at this time. Please check back later.</p>';
+      container.innerHTML = '<p class="notice">' + t('rest_no_rests', 'No restaurant reservations are available at this time. Please check back later.') + '</p>';
       return;
     }
 
@@ -27,10 +27,10 @@ async function loadRestaurants() {
     container.innerHTML = restaurants.map((place) => {
       restaurantMap[place._id] = place;
       const image = place.coverImage || '/photos/pizzaria.jpg';
-      const cuisine = place.cuisine || 'Local cuisine';
-      const hours = place.openingHours || 'Hours not listed';
-      const shortDesc = place.description || 'Reserve a table with an email confirmation from the restaurant.';
-      const rating = place.averageRating ? `⭐ ${place.averageRating.toFixed(1)}` : 'New';
+      const cuisine = place.cuisine || t('rest_local_cuisine', 'Local cuisine');
+      const hours = place.openingHours || t('clinic_no_hours', 'Hours not listed');
+      const shortDesc = place.description || t('rest_default_desc', 'Reserve a table with an email confirmation from the restaurant.');
+      const rating = place.averageRating ? `⭐ ${place.averageRating.toFixed(1)}` : t('clinic_new', 'New');
 
       return `
         <article class="restaurant-card">
@@ -44,16 +44,24 @@ async function loadRestaurants() {
             </div>
             <p>${escapeHtml(shortDesc)}</p>
             <div class="restaurant-meta">
-              <span>📍 ${escapeHtml(place.address || place.neighborhood || 'Nearby location')}</span>
+              <span>📍 ${escapeHtml(place.address || place.neighborhood || t('clinic_nearby', 'Nearby location'))}</span>
               <span>🍽️ ${escapeHtml(cuisine)}</span>
               <span>🕐 ${escapeHtml(hours)}</span>
             </div>
-            <button class="reserve-btn" type="button" data-id="${place._id}">Reserve a Table →</button>
+            <button class="reserve-btn" type="button" data-id="${place._id}">${t('rest_reserve_btn', 'Reserve a Table →')}</button>
           </div>
         </article>`;
     }).join('');
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const placeId = urlParams.get('placeId');
+    if (placeId && restaurantMap[placeId]) {
+      setTimeout(() => {
+        openReservationForm(restaurantMap[placeId]);
+      }, 100);
+    }
   } catch (err) {
-    container.innerHTML = `<p class="error-message">Could not load restaurants. ${escapeHtml(err.message)}</p>`;
+    container.innerHTML = `<p class="error-message">${t('rest_load_error', 'Could not load restaurants. ')} ${escapeHtml(err.message)}</p>`;
   }
 }
 
@@ -70,7 +78,7 @@ function openReservationForm(place) {
     <section class="reservation-card">
       <div class="reservation-header">
         <div>
-          <p class="eyebrow">🍽️ Reserve a Table</p>
+          <p class="eyebrow">${t('rest_form_eyebrow', '🍽️ Reserve a Table')}</p>
           <h2>${escapeHtml(place.name)}</h2>
           <p class="subtitle">${escapeHtml(place.address)}</p>
         </div>
@@ -79,40 +87,40 @@ function openReservationForm(place) {
       <form id="restaurant-reservation-form">
         <div class="form-grid">
           <label>
-            Your Name *
-            <input type="text" id="reservation-name" required value="${escapeHtml(defaultName)}" placeholder="Enter your name">
+            ${t('clinic_form_name', 'Your Name *')}
+            <input type="text" id="reservation-name" required value="${escapeHtml(defaultName)}" placeholder="${t('clinic_form_name_placeholder', 'Enter your name')}">
           </label>
           <label>
-            Your Email *
+            ${t('clinic_form_email', 'Your Email *')}
             <input type="email" id="reservation-email" required value="${escapeHtml(defaultEmail)}" placeholder="your@email.com">
           </label>
           <label>
-            Date *
+            ${t('clinic_form_date', 'Date *')}
             <input type="date" id="reservation-date" required min="${new Date().toISOString().split('T')[0]}">
           </label>
           <label>
-            Time *
+            ${t('rest_form_time', 'Time *')}
             <input type="time" id="reservation-time" required>
           </label>
           <label>
-            Number of Guests *
+            ${t('rest_form_guests', 'Number of Guests *')}
             <input type="number" id="reservation-party" required min="1" value="2">
           </label>
           <label>
-            Phone Number
+            ${t('rest_form_phone', 'Phone Number')}
             <input type="tel" id="reservation-phone" placeholder="+20 1XX XXX XXXX">
           </label>
         </div>
         <label>
-          Special Requests (optional)
-          <textarea id="reservation-notes" rows="4" placeholder="E.g. Window seat, vegetarian options needed, special occasion..."></textarea>
+          ${t('rest_form_requests', 'Special Requests (optional)')}
+          <textarea id="reservation-notes" rows="4" placeholder="${t('rest_form_requests_placeholder', 'E.g. Window seat, vegetarian options needed, special occasion...')}"></textarea>
         </label>
         <div class="form-actions">
-          <button type="submit" class="primary-btn" id="submit-btn">Complete Reservation</button>
-          <button type="button" class="secondary-btn" id="cancel-reservation">Cancel</button>
+          <button type="submit" class="primary-btn" id="submit-btn">${t('rest_form_submit', 'Complete Reservation')}</button>
+          <button type="button" class="secondary-btn" id="cancel-reservation">${t('clinic_form_cancel', 'Cancel')}</button>
         </div>
       </form>
-      <p class="help-text">✓ You will receive a confirmation email with the restaurant name, date, and time</p>
+      <p class="help-text">${t('rest_form_help', '✓ You will receive a confirmation email with the restaurant name, date, and time')}</p>
     </section>`;
 
   panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -129,7 +137,7 @@ async function handleReservationSubmit(event) {
   event.preventDefault();
 
   if (!selectedRestaurant) {
-    showToast('Please select a restaurant', 'error');
+    showToast(t('rest_toast_select', 'Please select a restaurant'), 'error');
     return;
   }
 
@@ -150,22 +158,22 @@ async function handleReservationSubmit(event) {
 
   // Validation
   if (!name) {
-    showToast('Please enter your name', 'error');
+    showToast(t('clinic_toast_name', 'Please enter your name'), 'error');
     return;
   }
 
   if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
-    showToast('Please enter a valid email address', 'error');
+    showToast(t('clinic_toast_email', 'Please enter a valid email address'), 'error');
     return;
   }
 
   if (!date || !time) {
-    showToast('Please select a date and time', 'error');
+    showToast(t('clinic_toast_datetime', 'Please select a date and time'), 'error');
     return;
   }
 
   if (partySize < 1) {
-    showToast('Please enter at least 1 guest', 'error');
+    showToast(t('rest_toast_guests', 'Please enter at least 1 guest'), 'error');
     return;
   }
 
@@ -188,7 +196,7 @@ async function handleReservationSubmit(event) {
 
     console.log('✅ Booking created:', response);
 
-    showToast(`🎉 Reservation confirmed at ${selectedRestaurant.name}!\n📧 Check ${email} for confirmation`, 'success');
+    showToast(`${t('rest_toast_confirmed', '🎉 Reservation confirmed at ')}${selectedRestaurant.name}${t('clinic_toast_check_email', '!\\n📧 Check ')}${email}${t('clinic_toast_for_confirmation', ' for confirmation')}`, 'success');
     
     setTimeout(() => {
       closeReservationForm();
@@ -196,7 +204,7 @@ async function handleReservationSubmit(event) {
     }, 1000);
   } catch (err) {
     console.error('❌ Booking error:', err);
-    showToast(`Booking failed: ${err.message}`, 'error');
+    showToast(`${t('clinic_toast_failed', 'Booking failed: ')}${err.message}`, 'error');
   } finally {
     hideSpinner(submitButton);
   }
