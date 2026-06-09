@@ -304,7 +304,11 @@ async function updateStatus(bookingId, status, placeId, placeName) {
   try {
     await API.put(`/bookings/${bookingId}/status`, { status });
     showToast(`Booking marked as ${status} — user notified by email`);
-    if (placeId) viewPlaceBookings(placeId, placeName || '');
+    if (placeId) {
+      viewPlaceBookings(placeId, placeName || '');
+    } else {
+      loadAdminBookings();
+    }
   } catch (err) {
     showToast(err.message, 'error');
   }
@@ -666,18 +670,33 @@ async function loadAdminBookings(page = 1) {
 
   try {
     const data = await API.get(`/admin/bookings?${params}`);
-    container.innerHTML = data.data.map(b => `
+    container.innerHTML = data.data.map(b => {
+      const actions = b.status === 'pending'
+        ? `<button onclick="updateStatus('${b._id}','confirmed')"
+            style="padding:5px 10px;background:#dcfce7;color:#166534;border:none;border-radius:6px;cursor:pointer;font-size:12px;margin-right:6px">Confirm</button>
+           <button onclick="updateStatus('${b._id}','cancelled')"
+            style="padding:5px 10px;background:#fee2e2;color:#b91c1c;border:none;border-radius:6px;cursor:pointer;font-size:12px">Cancel</button>`
+        : b.status === 'confirmed'
+        ? `<button onclick="updateStatus('${b._id}','completed')"
+            style="padding:5px 10px;background:#ede9fe;color:#6d28d9;border:none;border-radius:6px;cursor:pointer;font-size:12px;margin-right:6px">Complete</button>
+           <button onclick="updateStatus('${b._id}','cancelled')"
+            style="padding:5px 10px;background:#fee2e2;color:#b91c1c;border:none;border-radius:6px;cursor:pointer;font-size:12px">Cancel</button>`
+        : '';
+
+      return `
       <tr>
         <td style="padding:10px">${b.user?.name || 'N/A'}</td>
         <td style="padding:10px">${b.place?.name || 'N/A'}</td>
         <td style="padding:10px;text-transform:capitalize">${b.type}</td>
         <td style="padding:10px">${new Date(b.date).toLocaleDateString()}</td>
         <td style="padding:10px;text-transform:capitalize">${b.status}</td>
-      </tr>`).join('');
+        <td style="padding:10px">${actions}</td>
+      </tr>`;
+    }).join('');
 
     renderPagination('admin-bookings-pagination', data.pagination, loadAdminBookings);
   } catch (err) {
-    container.innerHTML = `<tr><td colspan="5" style="color:red;padding:10px">${err.message}</td></tr>`;
+    container.innerHTML = `<tr><td colspan="6" style="color:red;padding:10px">${err.message}</td></tr>`;
   }
 }
 
