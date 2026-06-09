@@ -71,6 +71,9 @@ app.use((req, res, next) => {
 
 // Force HTTPS redirect if certificates exist and connection is not secure
 app.use((req, res, next) => {
+  const isCloud = process.env.RAILWAY_ENVIRONMENT || process.env.CODESPACES;
+  if (isCloud) return next();
+  
   const keyPath = path.join(__dirname, 'config', 'certs', 'key.pem');
   const certPath = path.join(__dirname, 'config', 'certs', 'cert.pem');
   if (fs.existsSync(keyPath) && fs.existsSync(certPath) && !req.secure && req.get('x-forwarded-proto') !== 'https') {
@@ -185,9 +188,9 @@ const startServer = async () => {
   const keyPath = path.join(__dirname, 'config', 'certs', 'key.pem');
   const certPath = path.join(__dirname, 'config', 'certs', 'cert.pem');
   
-  // Explicitly check if running inside a cloud environment like Railway
-  const isRailway = !!process.env.RAILWAY_ENVIRONMENT;
-  const hasCerts = !isRailway && fs.existsSync(keyPath) && fs.existsSync(certPath);
+  // Explicitly check if running inside a cloud environment like Railway or Codespaces
+  const isCloud = process.env.RAILWAY_ENVIRONMENT || process.env.CODESPACES;
+  const hasCerts = !isCloud && fs.existsSync(keyPath) && fs.existsSync(certPath);
 
   let server;
   if (hasCerts) {
