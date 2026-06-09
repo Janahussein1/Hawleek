@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         else if (/cilantro|cafe/.test(searchText)) displayImage = '/photos/cilantro_cafe.png';
                         else displayImage = '/photos/restaurant.jpg';
                     } else if (type === 'clinic') {
-                        displayImage = '/photos/clinic.jpg';
+                        displayImage = '/photos/generalclinic.jpg';
                     } else if (type === 'mosque') {
                         displayImage = '/photos/mosquepicture.jpg';
                     } else if (type === 'transport' || type === 'station') {
