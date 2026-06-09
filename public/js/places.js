@@ -126,30 +126,6 @@ async function loadNeighborhoods() {
   }
 }
 
-async function loadWeather() {
-  const weatherEl = document.getElementById('weather-widget');
-  if (!weatherEl) return;
-
-  try {
-    const data = await API.get('/weather');
-    const w = data.data;
-    weatherEl.innerHTML = `
-      <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;
-        background:#e0f2fe;border-radius:10px;font-size:14px">
-        <img src="https://openweathermap.org/img/wn/${w.icon}.png" alt="${w.description}"
-          style="width:40px;height:40px" onerror="this.style.display='none'">
-        <div>
-          <strong>${w.city}</strong> · ${w.temperature}°C
-          <br><span style="color:#555;text-transform:capitalize">${w.description}</span>
-          · 💧 ${w.humidity}%
-          ${w.isMock ? '<small style="color:#f59e0b"> (demo)</small>' : ''}
-        </div>
-      </div>`;
-  } catch (err) {
-    console.warn('Weather unavailable:', err.message);
-  }
-}
-
 async function loadPlaceDetail() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');

@@ -156,7 +156,6 @@ app.use('/api/bookings',  require('./routes/Rbooking'));
 app.use('/api/reviews',   require('./routes/Rreview'));
 app.use('/api/transport', require('./routes/transport'));
 app.use('/api/admin',     require('./routes/admin'));
-app.use('/api/weather',   require('./routes/weather'));
 app.use('/api/contact',   require('./routes/contact'));
 
 
