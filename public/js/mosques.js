@@ -3,18 +3,30 @@ document.addEventListener("DOMContentLoaded", () => {
     const servicesWrapper = document.querySelector(".services-wrapper");
     if (!servicesWrapper) return;
 
-    servicesWrapper.innerHTML = '<p class="loading-message" style="grid-column: 1/-1; text-align: center; color: #888;">' + t('mosque_loading', 'Loading nearby mosques...') + '</p>';
+    // Save the original hardcoded HTML
+    const originalHTML = servicesWrapper.innerHTML;
+    
+    // Append a small loading indicator instead of replacing everything
+    const loadingEl = document.createElement('p');
+    loadingEl.className = 'loading-message';
+    loadingEl.style.cssText = 'grid-column: 1/-1; text-align: center; color: #888;';
+    loadingEl.textContent = t('mosque_loading', 'Loading dynamic mosques...');
+    servicesWrapper.appendChild(loadingEl);
 
     try {
       const res = await API.get('/places?type=mosque&limit=50');
       const mosques = Array.isArray(res.data) ? res.data : [];
 
+      // Remove loading indicator
+      loadingEl.remove();
+
       if (mosques.length === 0) {
-        servicesWrapper.innerHTML = '<p class="notice" style="grid-column: 1/-1; text-align: center; color: #888;">' + t('mosque_no_mosques', 'No mosques listed in the directory.') + '</p>';
+        // If no dynamic mosques, just leave the hardcoded ones intact!
         return;
       }
 
-      servicesWrapper.innerHTML = ""; 
+      // If we have dynamic mosques, append them to the existing ones
+
 
       mosques.forEach((mosque) => {
         const image = mosque.coverImage || '/photos/mosquepicture.jpg';
