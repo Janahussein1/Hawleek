@@ -23,7 +23,7 @@ const placeSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ['restaurant', 'cafe', 'clinic', 'station', 'pharmacy', 'gym', 'other'],
+      enum: ['restaurant', 'cafe', 'clinic', 'station', 'pharmacy', 'gym', 'mosque', 'toilet', 'service', 'other'],
       required: [true, 'Place type is required'],
     },
     description: { type: String, trim: true, maxlength: [500, 'Description cannot exceed 500 characters'] },
