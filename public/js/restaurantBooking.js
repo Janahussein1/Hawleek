@@ -8,6 +8,20 @@ function escapeHtml(text) {
   });
 }
 
+function getRestaurantImage(place) {
+  const name = String(place?.name || '').toLowerCase();
+  const cuisine = String(place?.cuisine || '').toLowerCase();
+  const searchText = `${name} ${cuisine}`;
+
+  if (/koshary|tahrir/.test(searchText)) return '/photos/koshary_tahrir.png';
+  if (/nile|view/.test(searchText)) return '/photos/nile_view.png';
+  if (/zamalek|bistro|garden/.test(searchText)) return '/photos/zamalek_bistro.png';
+  if (/seafood|grill/.test(searchText)) return '/photos/downtown_seafood.png';
+  if (/cilantro|cafe/.test(searchText)) return '/photos/cilantro_cafe.png';
+  if (place?.coverImage) return place.coverImage;
+  return '/photos/restaurant.jpg';
+}
+
 async function loadRestaurants() {
   const container = document.getElementById('restaurant-list');
   if (!container) return;
@@ -26,7 +40,7 @@ async function loadRestaurants() {
     restaurantMap = {};
     container.innerHTML = restaurants.map((place) => {
       restaurantMap[place._id] = place;
-      const image = place.coverImage || '/photos/pizzaria.jpg';
+      const image = getRestaurantImage(place);
       const cuisine = place.cuisine || t('rest_local_cuisine', 'Local cuisine');
       const hours = place.openingHours || t('clinic_no_hours', 'Hours not listed');
       const shortDesc = place.description || t('rest_default_desc', 'Reserve a table with an email confirmation from the restaurant.');
