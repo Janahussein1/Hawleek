@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!target) return;
         target.innerHTML = '<p class="loading-message">' + t('search_loading', 'Searching &hellip;') + '</p>';
         try {
-            let url = `/places?limit=24`;
+            let url = `/places?limit=100`;
             if (q) url += `&search=${encodeURIComponent(q)}`;
             if (cat && cat !== 'all') url += `&type=${encodeURIComponent(cat)}`;
             const res = await API.get(url);
@@ -62,6 +62,31 @@ document.addEventListener("DOMContentLoaded", () => {
             target.innerHTML = results.map(place => {
                 let actionLink = '';
                 const type = place.type || 'other';
+                
+                // Intelligent image fallback logic matching booking.js
+                let displayImage = place.coverImage;
+                if (!displayImage) {
+                    const nameLower = String(place.name || '').toLowerCase();
+                    if (type === 'restaurant' || type === 'cafe' || type === 'food') {
+                        const cuisine = String(place.cuisine || '').toLowerCase();
+                        const searchText = `${nameLower} ${cuisine}`;
+                        if (/koshary|tahrir/.test(searchText)) displayImage = '/photos/koshary_tahrir.png';
+                        else if (/nile|view/.test(searchText)) displayImage = '/photos/nile_view.png';
+                        else if (/zamalek|bistro|garden/.test(searchText)) displayImage = '/photos/zamalek_bistro.png';
+                        else if (/seafood|grill/.test(searchText)) displayImage = '/photos/downtown_seafood.png';
+                        else if (/cilantro|cafe/.test(searchText)) displayImage = '/photos/cilantro_cafe.png';
+                        else displayImage = '/photos/restaurant.jpg';
+                    } else if (type === 'clinic') {
+                        displayImage = '/photos/clinic.jpg';
+                    } else if (type === 'mosque') {
+                        displayImage = '/photos/mosquepicture.jpg';
+                    } else if (type === 'transport' || type === 'station') {
+                        displayImage = '/photos/transportation.jpg';
+                    } else {
+                        displayImage = '/photos/pizzaria.jpg';
+                    }
+                }
+
                 if (type === 'restaurant' || type === 'cafe' || type === 'food') {
                     actionLink = `<a href="/booking?placeId=${place._id}" class="book-link">${t('home_book_table', 'Book a Table')}</a>`;
                 } else if (type === 'clinic') {
@@ -78,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 return `
                 <article class="card">
-                    <img src="${place.coverImage || '/photos/pizzaria.jpg'}" alt="${place.name}">
+                    <img src="${displayImage}" alt="${place.name}">
                     <div class="card-content">
                         <h3>${place.name}</h3>
                         <span class="category-badge" style="display:inline-block;padding:2px 8px;font-size:0.75rem;background:var(--primary-light);color:var(--primary);border:1px solid var(--primary-border);border-radius:4px;margin-bottom:8px;text-transform:capitalize;font-weight:600;">${t('type_' + type, type)}</span>
